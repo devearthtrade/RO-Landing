@@ -1,0 +1,110 @@
+import { useRef } from 'react'
+import { KEY_BENEFITS } from '../data/content'
+import { PRICE_DISPLAY, PRODUCT_NAME } from '../data/product'
+import { useReducedMotion } from '../hooks/useReducedMotion'
+import { useRevealOnScroll } from '../hooks/useVideoScrub'
+import { AddToCartButton } from './AddToCartButton'
+import { SectionHeading } from './SectionHeading'
+import styles from './OfferSection.module.css'
+
+/**
+ * The offer.
+ *
+ * Everything a buyer needs to decide, in one place and above the FAQ: what it
+ * does, what it costs, what is included, and what protects them if it turns
+ * out to be wrong for their kitchen.
+ *
+ * The lifetime warranty leads here on purpose. It is the strongest verified
+ * differentiator this product has — most systems in this category are covered
+ * for a year or two — and it was previously buried at the bottom of the page.
+ *
+ * Every line traces to a confirmed value in `specs.ts` / `trust.ts`.
+ */
+export function OfferSection() {
+  const rootRef = useRef<HTMLElement | null>(null)
+  const reducedMotion = useReducedMotion()
+
+  useRevealOnScroll(rootRef, { disabled: reducedMotion, stagger: 0.06 })
+
+  return (
+    <section
+      id="offer"
+      ref={rootRef}
+      className={styles.section}
+      data-theme="deep"
+      aria-labelledby="offer-heading"
+    >
+      <div className="shell">
+        <SectionHeading
+          id="offer-heading"
+          eyebrow="The offer"
+          title="One system. Covered for life."
+          lead="Reverse osmosis, alkaline mineralization and a lifetime warranty — for a single price, shipped free."
+          width="wide"
+        />
+
+        <div className={styles.layout} style={{ marginTop: 'clamp(2.5rem, 6vh, 4rem)' }}>
+          <ul className={styles.benefits} role="list">
+            {KEY_BENEFITS.map((benefit) => (
+              <li className={styles.benefit} key={benefit.id} data-reveal>
+                <svg className={styles.tick} viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path
+                    d="M2.5 8.4 6.2 12 13.5 4"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <h3 className={styles.benefitTitle}>{benefit.title}</h3>
+                <p className={styles.benefitBody}>{benefit.body}</p>
+              </li>
+            ))}
+          </ul>
+
+          <div className={styles.panel} data-reveal>
+            <span className={styles.panelLabel}>Complete system</span>
+            <h3 className={styles.productName}>{PRODUCT_NAME}</h3>
+
+            <div className={styles.priceRow}>
+              <span className={styles.price}>{PRICE_DISPLAY}</span>
+              <span className={styles.priceNote}>Free shipping</span>
+            </div>
+
+            <div className={styles.action}>
+              <AddToCartButton variant="onDeep" block label="Add to cart" />
+            </div>
+
+            <ul className={styles.included} role="list">
+              <li className={styles.includedItem}>
+                <span className={styles.dot} aria-hidden="true" />
+                <span>
+                  <strong>Lifetime warranty</strong> with product registration
+                </span>
+              </li>
+              <li className={styles.includedItem}>
+                <span className={styles.dot} aria-hidden="true" />
+                <span>
+                  <strong>100% satisfaction guarantee</strong> — your money back if it is not right
+                </span>
+              </li>
+              <li className={styles.includedItem}>
+                <span className={styles.dot} aria-hidden="true" />
+                <span>
+                  <strong>Free shipping</strong> to the contiguous 48 states, reduced rate to Alaska
+                  and Hawaii
+                </span>
+              </li>
+              <li className={styles.includedItem}>
+                <span className={styles.dot} aria-hidden="true" />
+                <span>
+                  <strong>Filters last 6–12 months</strong> depending on household size
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}

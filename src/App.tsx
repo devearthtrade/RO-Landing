@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { ScrollTrigger } from './lib/gsap'
 import { Header } from './components/Header'
 import { Hero } from './components/Hero'
+import { ProblemSection } from './components/ProblemSection'
 import { SystemReveal } from './components/SystemReveal'
 import { FiltrationSection } from './components/FiltrationSection'
 import { WaterJourney } from './components/WaterJourney'
@@ -11,6 +12,8 @@ import { LifestyleSection } from './components/LifestyleSection'
 import { SpecsSection } from './components/SpecsSection'
 import { TrustSection } from './components/TrustSection'
 import { ReviewsSection } from './components/ReviewsSection'
+import { OfferSection } from './components/OfferSection'
+import { FaqSection } from './components/FaqSection'
 import { FinalCTA } from './components/FinalCTA'
 import { Footer } from './components/Footer'
 import { StickyAddToCart } from './components/StickyAddToCart'
@@ -37,7 +40,10 @@ export default function App() {
       <Header />
 
       <main id="main">
+        {/* Hero -> Problem -> Purification -> RO technology -> Why this
+            system -> Product experience -> Proof -> Offer -> FAQ -> Close. */}
         <Hero />
+        <ProblemSection />
         <SystemReveal />
         <FiltrationSection />
         <WaterJourney />
@@ -47,6 +53,8 @@ export default function App() {
         <SpecsSection />
         <TrustSection />
         <ReviewsSection />
+        <OfferSection />
+        <FaqSection />
         <FinalCTA />
       </main>
 

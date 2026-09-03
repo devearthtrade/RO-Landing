@@ -117,6 +117,7 @@ Every figure on the page comes from the data layer, never from markup:
 | `src/data/content.ts` | Section copy, video map, journey steps, minerals |
 | `src/data/trust.ts` | Warranty, shipping, returns, support |
 | `src/data/reviews.ts` | Reviews (currently placeholders) |
+| `src/data/faq.ts` | FAQ questions and answers |
 
 **Unverified values are never invented.** A spec whose value is `TODO_VERIFY`
 renders as "Pending verification" in the UI, and the specifications section
@@ -138,12 +139,41 @@ satisfaction guarantee, free shipping to the contiguous 48 states.
 The page makes **no health, medical or therapeutic claims**, and the footer
 says so explicitly. Keep it that way.
 
+The FAQ follows the same rule in a stricter form: a question whose `answer`
+is `null` is **not rendered at all**. A shopper is never shown "we don't
+know" — the question stays in `src/data/faq.ts` so the gap is tracked, and a
+development-only note on the page lists what is still withheld. Six questions
+are currently held back: production rate (GPD), certification, water
+efficiency, self-installation, dimensions, and the return window.
+
 Reviews in `src/data/reviews.ts` are **placeholders** and are labelled as such
 on the page while `REVIEWS_ARE_PLACEHOLDER` is `true`. The `Review` type
 mirrors what Judge.me / Loox / Okendo return, so going live is a data-layer
 swap — no component changes.
 
 ---
+
+## Page structure
+
+The sections run as one sales narrative, in this order:
+
+| # | Section | Component |
+| --- | --- | --- |
+| 1 | Hero | `Hero` |
+| 2 | Problem | `ProblemSection` |
+| 3 | Purification | `SystemReveal` |
+| 4 | RO technology | `FiltrationSection`, `WaterJourney` |
+| 5 | Why this system | `TanklessSection`, `MineralizationSection` |
+| 6 | Product experience | `LifestyleSection` |
+| 7 | Proof | `SpecsSection`, `TrustSection`, `ReviewsSection` |
+| 8 | Offer | `OfferSection` |
+| 9 | FAQ | `FaqSection` |
+| 10 | Final CTA | `FinalCTA` |
+
+Purchase points: the hero, the offer panel, the final CTA, and the sticky bar
+that rides from the end of the hero to the offer. The sticky bar stands down
+whenever a full-size Add to Cart is already on screen, so the two never
+compete.
 
 ## Architecture
 

@@ -17,12 +17,16 @@ export function StickyAddToCart() {
     const onScroll = () => {
       const pastHero = window.scrollY > window.innerHeight * 0.9
 
-      const finalCta = document.getElementById('buy')
-      const overFinalCta = finalCta
-        ? finalCta.getBoundingClientRect().top < window.innerHeight * 0.62
-        : false
+      // Stand down wherever a full-size Add to Cart is already on screen,
+      // so the bar never competes with the CTA the reader is looking at.
+      const overFullCta = ['offer', 'buy'].some((id) => {
+        const section = document.getElementById(id)
+        if (!section) return false
+        const box = section.getBoundingClientRect()
+        return box.top < window.innerHeight * 0.62 && box.bottom > 0
+      })
 
-      setVisible(pastHero && !overFinalCta)
+      setVisible(pastHero && !overFullCta)
     }
 
     onScroll()

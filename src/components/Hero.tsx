@@ -4,6 +4,7 @@ import { VIDEOS } from '../data/content'
 import { PRICE_DISPLAY } from '../data/product'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { useIsDesktop } from '../hooks/useMediaQuery'
+import { AddToCartButton } from './AddToCartButton'
 import { CinematicVideo } from './CinematicVideo'
 import { LinkButton } from './LinkButton'
 import styles from './Hero.module.css'
@@ -105,7 +106,10 @@ export function Hero() {
           </div>
 
           <div className={styles.actions} data-hero-line>
-            <LinkButton href="#inside" variant="onDeep">
+            {/* The buy path is available from the first screen; exploring
+                the story is the secondary action. */}
+            <AddToCartButton variant="onDeep" label="Add to cart" />
+            <LinkButton href="#inside" variant="ghost">
               Explore the system
             </LinkButton>
           </div>

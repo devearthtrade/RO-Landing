@@ -3,10 +3,10 @@ import { PRODUCT_NAME_SHORT } from '../data/product'
 import styles from './Header.module.css'
 
 const NAV = [
-  { href: '#filtration', label: 'Filtration' },
-  { href: '#tankless', label: 'Tankless' },
+  { href: '#filtration', label: 'Technology' },
   { href: '#specifications', label: 'Specifications' },
-  { href: '#warranty', label: 'Warranty' },
+  { href: '#faq', label: 'FAQ' },
+  { href: '#offer', label: 'Buy' },
 ]
 
 /**

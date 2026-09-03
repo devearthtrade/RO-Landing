@@ -103,3 +103,55 @@ export const MINERALS = [
     note: 'Completes the mineralization stage.',
   },
 ] as const
+
+/**
+ * Section 2 — the problem, before the product.
+ *
+ * Deliberately general and non-medical. These describe the category and the
+ * everyday experience of tap water, not claims about any particular supply
+ * and not health claims of any kind.
+ */
+export const PROBLEM_POINTS = [
+  {
+    id: 'taste',
+    title: 'It tastes like treatment',
+    body: 'Municipal water is treated so it arrives safe. Chlorine is part of how that is done — and it is also part of what you taste.',
+  },
+  {
+    id: 'bottled',
+    title: 'So you buy around it',
+    body: 'Cases of bottled water in the garage, a jug in the fridge, a pitcher filter that needs refilling before every glass.',
+  },
+  {
+    id: 'pitcher',
+    title: 'A pitcher is not reverse osmosis',
+    body: 'Carbon pitchers improve taste. They do not do what a reverse osmosis membrane does, and they never stop needing your attention.',
+  },
+] as const
+
+/**
+ * The verified benefits, consolidated for the offer block. Every line here
+ * must trace to a confirmed value in `specs.ts` — no new claims.
+ */
+export const KEY_BENEFITS = [
+  {
+    id: 'reduction',
+    title: 'Up to 98% contaminant reduction',
+    body: 'Of common tap-water contaminants, including many heavy metals and chemicals.',
+  },
+  {
+    id: 'minerals',
+    title: 'Minerals put back',
+    body: 'Calcium, magnesium and potassium are reintroduced after purification, bringing the water to roughly pH 8–9.',
+  },
+  {
+    id: 'tankless',
+    title: 'Tankless, under the counter',
+    body: 'Filtered on demand, so no pressurized storage tank takes up the cabinet.',
+  },
+  {
+    id: 'warranty',
+    title: 'Covered for life',
+    body: 'A lifetime warranty with product registration, backed by a 100% satisfaction guarantee.',
+  },
+] as const

@@ -1,0 +1,79 @@
+.section {
+  padding-block: var(--section-y);
+  background-color: var(--paper);
+}
+
+.layout {
+  display: grid;
+  gap: clamp(2.5rem, 6vh, 4rem);
+}
+
+.points {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: problem;
+}
+
+.point {
+  counter-increment: problem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.2rem 1.1rem;
+  padding-block: clamp(1.2rem, 2.6vh, 1.7rem);
+  border-top: 1px solid var(--line);
+}
+
+.point:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.point::before {
+  content: counter(problem, decimal-leading-zero);
+  grid-row: 1 / 3;
+  font-family: var(--font-mono);
+  font-size: var(--step-small);
+  line-height: 1.7;
+  color: var(--ink-faint);
+}
+
+.pointTitle {
+  font-size: var(--step-h3);
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.2;
+}
+
+.pointBody {
+  font-size: var(--step-body);
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 52ch;
+}
+
+/* The turn: the sentence that pivots from problem to product. */
+.turn {
+  margin-top: clamp(2rem, 5vh, 3rem);
+  padding-top: clamp(1.6rem, 3.5vh, 2.4rem);
+  border-top: 2px solid var(--ink);
+  font-size: var(--step-h3);
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.3;
+  max-width: 34ch;
+}
+
+.turn em {
+  font-style: normal;
+  color: var(--blue);
+}
+
+@media (min-width: 900px) {
+  .layout {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+    gap: clamp(3rem, 6vw, 6rem);
+    align-items: start;
+  }
+}
