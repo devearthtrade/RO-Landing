@@ -27,7 +27,9 @@
 }
 
 .inner {
-  max-width: 20ch;
+  /* rem, not ch: this container inherits body type, so `ch` here would size
+     to the body font rather than the display font it holds. */
+  max-width: min(46rem, 100%);
 }
 
 .eyebrow {
@@ -109,7 +111,7 @@
 
 @media (min-width: 900px) {
   .inner {
-    max-width: 15ch;
+    max-width: min(42rem, 52vw);
   }
 
   .subhead {

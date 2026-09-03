@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 import { gsap } from '../lib/gsap'
 import { VIDEOS } from '../data/content'
 import { PRICE_DISPLAY } from '../data/product'
@@ -18,7 +18,8 @@ export function Hero() {
   const reducedMotion = useReducedMotion()
   const isDesktop = useIsDesktop()
 
-  useEffect(() => {
+  // Above the fold, so the entrance state must land before first paint.
+  useLayoutEffect(() => {
     const root = rootRef.current
     if (!root) return
 

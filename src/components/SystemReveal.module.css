@@ -8,10 +8,12 @@
 }
 
 .introInner {
-  max-width: 34ch;
+  max-width: min(46rem, 100%);
 }
 
 .introStatement {
+  /* em: the measure scales with the fluid display size it is set in. */
+  max-width: 14em;
   font-size: var(--step-h2);
   font-weight: 500;
   letter-spacing: var(--tracking-display);
@@ -49,10 +51,11 @@
 }
 
 .copy {
-  max-width: 32ch;
+  max-width: min(34rem, 100%);
 }
 
 .copy h2 {
+  max-width: 11em;
   font-size: var(--step-h2);
   font-weight: 500;
   letter-spacing: var(--tracking-display);
@@ -108,7 +111,7 @@
   }
 
   .copy {
-    max-width: 26ch;
+    max-width: min(30rem, 44vw);
   }
 }
 

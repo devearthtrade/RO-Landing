@@ -1,9 +1,11 @@
 .block {
-  max-width: 44ch;
+  /* Containers hold display type, so their measure is set in rem; the
+     headline below carries its own em-based measure. */
+  max-width: min(44rem, 100%);
 }
 
 .wide {
-  max-width: 58ch;
+  max-width: min(54rem, 100%);
 }
 
 .centered {
@@ -11,11 +13,16 @@
   text-align: center;
 }
 
+.centered .title {
+  margin-inline: auto;
+}
+
 .eyebrow {
   margin-bottom: clamp(0.9rem, 1.6vh, 1.3rem);
 }
 
 .title {
+  max-width: 11em;
   font-size: var(--step-h2);
   font-weight: 500;
   letter-spacing: var(--tracking-display);

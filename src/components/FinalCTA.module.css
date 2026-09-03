@@ -21,7 +21,7 @@
 }
 
 .inner {
-  max-width: 34ch;
+  max-width: min(44rem, 100%);
 }
 
 .headline {

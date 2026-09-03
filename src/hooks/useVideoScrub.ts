@@ -1,4 +1,4 @@
-import { useEffect, type RefObject } from 'react'
+import { useEffect, useLayoutEffect, type RefObject } from 'react'
 import { gsap, ScrollTrigger } from '../lib/gsap'
 
 interface Options {
@@ -94,7 +94,9 @@ export function useRevealOnScroll(
 ): void {
   const { selector = '[data-reveal]', disabled = false, stagger = 0.09 } = options
 
-  useEffect(() => {
+  // useLayoutEffect, not useEffect: the hidden starting state has to be in
+  // place before first paint, otherwise every reveal flashes visible first.
+  useLayoutEffect(() => {
     const scope = scopeRef.current
     if (!scope) return
 

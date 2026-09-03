@@ -121,16 +121,6 @@ section[id] {
   padding-inline: var(--gutter);
 }
 
-.section {
-  position: relative;
-  padding-block: var(--section-y);
-}
-
-.section--deep {
-  background-color: var(--deep);
-  color: var(--on-deep);
-}
-
 .eyebrow {
   display: block;
   font-size: var(--step-eyebrow);
@@ -140,7 +130,6 @@ section[id] {
   color: var(--ink-muted);
 }
 
-.section--deep .eyebrow,
 [data-theme='deep'] .eyebrow {
   color: var(--aqua);
 }
@@ -153,7 +142,6 @@ section[id] {
   letter-spacing: -0.008em;
 }
 
-.section--deep .lead,
 [data-theme='deep'] .lead {
   color: var(--on-deep-muted);
 }
