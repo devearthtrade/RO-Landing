@@ -41,10 +41,11 @@ export const TRUST_ITEMS: TrustItem[] = [
   },
   {
     id: 'certification',
-    title: 'Certification',
-    // TODO_VERIFY: certifying body and standard (e.g. NSF/ANSI) before any
-    // certification claim appears on this page.
-    body: null,
+    title: 'Certified carbon media',
+    // Scope is deliberate: NSF/ANSI 42 and 61 certify the carbon media. The
+    // assembled system is NOT certified as far as we can confirm, so this
+    // must not be reworded into a whole-system claim.
+    body: 'The carbon filtration media is certified to NSF/ANSI 42 and NSF/ANSI 61. This covers the media itself, not the assembled system.',
   },
   {
     id: 'support',

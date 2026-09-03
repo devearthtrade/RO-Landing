@@ -20,6 +20,13 @@
   margin-top: 1.5rem;
   padding-top: 1.5rem;
   border-top: 1px solid var(--deep-line);
+}
+
+/* Consecutive disclaimers read as one block, not two rules. */
+.disclaimer + .disclaimer {
+  margin-top: 0.9rem;
+  padding-top: 0;
+  border-top: 0;
   line-height: 1.6;
   color: rgba(157, 171, 185, 0.8);
 }

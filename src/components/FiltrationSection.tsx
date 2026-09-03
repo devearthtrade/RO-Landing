@@ -5,7 +5,7 @@ import { SpecList } from './SpecList'
 import { VideoSection } from './VideoSection'
 
 /** The technical specs surfaced alongside the filtration footage. */
-const OVERLAY_SPEC_IDS = ['stages', 'reduction', 'membrane', 'filter-life']
+const OVERLAY_SPEC_IDS = ['stages', 'chlorine', 'media-certification', 'reduction']
 
 const overlaySpecs = OVERLAY_SPEC_IDS.map((id) => SPECS.find((spec) => spec.id === id)).filter(
   (spec): spec is (typeof SPECS)[number] => Boolean(spec),
@@ -33,7 +33,7 @@ export function FiltrationSection() {
         id="filtration-heading"
         eyebrow="Filtration"
         title="Engineered filtration"
-        lead="Five stages, in sequence. Sediment and carbon first, then the reverse osmosis membrane, then the mineral finish that makes the water drinkable rather than merely pure."
+        lead="Five stages, in sequence. Sediment and carbon first — where chlorine is reduced — then the reverse osmosis membrane, then the mineral finish that makes the water drinkable rather than merely pure."
       />
     </VideoSection>
   )

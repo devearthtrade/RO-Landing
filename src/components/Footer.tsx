@@ -11,8 +11,15 @@ export function Footer() {
         </div>
 
         <p className={styles.disclaimer}>
-          This page describes the filtration and mineralization performed by the system. It makes
-          no health, medical or therapeutic claims, and nothing here is intended to diagnose,
+          NSF/ANSI 42 and NSF/ANSI 61 certification applies to the carbon filtration media used in
+          this system. It is not a certification of the assembled system, and no whole-system
+          certification is claimed.
+        </p>
+
+        <p className={styles.disclaimer}>
+          This page describes the filtration and mineralization performed by the system, and states
+          pH, mineral content and oxidation reduction potential as measurements of the water. It
+          makes no health, medical or therapeutic claims, and nothing here is intended to diagnose,
           treat, cure or prevent any condition.
         </p>
       </div>

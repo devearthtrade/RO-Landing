@@ -1,4 +1,4 @@
-import { VIDEOS, MINERALS } from '../data/content'
+import { VIDEOS, MINERALS, WATER_CHEMISTRY } from '../data/content'
 import { SectionHeading } from './SectionHeading'
 import { VideoSection } from './VideoSection'
 import styles from './MineralizationSection.module.css'
@@ -19,24 +19,35 @@ export function MineralizationSection() {
       tone="paper"
       focalPoint="50% 50%"
       extras={
-        <ul className={styles.minerals} role="list">
-          {MINERALS.map((mineral) => (
-            <li className={styles.mineral} key={mineral.symbol} data-reveal>
-              <span className={styles.symbol} aria-hidden="true">
-                {mineral.symbol}
-              </span>
-              <span className={styles.name}>{mineral.name}</span>
-              <span className={styles.note}>{mineral.note}</span>
-            </li>
-          ))}
-        </ul>
+        <>
+          <dl className={styles.chemistry}>
+            {WATER_CHEMISTRY.map((row) => (
+              <div className={styles.measure} key={row.id} data-reveal>
+                <dt className={styles.measureLabel}>{row.label}</dt>
+                <dd className={styles.measureValue}>{row.value}</dd>
+                <dd className={styles.measureNote}>{row.note}</dd>
+              </div>
+            ))}
+          </dl>
+          <ul className={styles.minerals} role="list">
+            {MINERALS.map((mineral) => (
+              <li className={styles.mineral} key={mineral.symbol} data-reveal>
+                <span className={styles.symbol} aria-hidden="true">
+                  {mineral.symbol}
+                </span>
+                <span className={styles.name}>{mineral.name}</span>
+                <span className={styles.note}>{mineral.note}</span>
+              </li>
+            ))}
+          </ul>
+        </>
       }
     >
       <SectionHeading
         id="mineralization-heading"
         eyebrow="Mineralization"
         title="Purified. Then remineralized."
-        lead="Reverse osmosis strips water down to almost nothing — including the minerals that give it taste. The final stage puts calcium, magnesium and potassium back, bringing the water to roughly pH 8–9."
+        lead="Reverse osmosis strips water down to almost nothing — including the minerals that give it taste. The final stage puts calcium, magnesium and potassium back, rebalancing the water above 7.5 pH."
       />
     </VideoSection>
   )

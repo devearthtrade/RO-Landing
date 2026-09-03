@@ -1,19 +1,34 @@
 /**
  * Product specifications.
  *
- * RULE: never invent a value. Anything not confirmed against the product page
- * or the manufacturer is `TODO_VERIFY` and renders as "Pending verification"
- * in the UI rather than as a number a customer could be misled by.
+ * RULE: never invent a value. Anything not confirmed is `TODO_VERIFY` and
+ * renders as "Pending verification" in the UI rather than as a number a
+ * customer could be misled by.
  *
- * Verified entries below are sourced from Pitcher of Life product/FAQ copy:
- *   - 5-filter reverse osmosis system producing alkaline drinking water
- *   - removes up to 98% of common tap-water contaminants
- *   - adds calcium, magnesium and potassium
- *   - raises pH to roughly 8–9
- *   - tankless, installed discreetly under the counter
- *   - filter life: ~6 months for a 4-person household, ~12 months for 1–2
- *   - lifetime warranty with product registration
- *   - free shipping to the contiguous 48 states
+ * PROVENANCE. Two tiers of fact appear here:
+ *
+ *  1. Values from the supplied specification sheet — treated as verified:
+ *       - water rebalanced to over 7.5 pH
+ *       - enriched with calcium, magnesium and potassium
+ *       - ORP -100 to -200 mV
+ *       - carbon media certified to NSF/ANSI 42 and NSF/ANSI 61
+ *       - special features: chlorine reduction, tankless
+ *       - dimensions 10.24"L x 20.5"W x 23.62"H
+ *
+ *  2. Values taken from published brand copy that the specification sheet
+ *     does not cover. These carry `needsConfirmation` and are listed in the
+ *     development note under the specifications section so they stay visible
+ *     until someone signs them off: the 5-stage count, the "up to 98%"
+ *     reduction figure, and the 6-12 month filter life.
+ *
+ * CERTIFICATION SCOPE. NSF/ANSI 42 and 61 apply to the CARBON MEDIA, not to
+ * the assembled system. The two are separate rows below precisely so the
+ * distinction cannot be collapsed by a reader skimming the table, and the
+ * system-level row stays pending until certification is confirmed in writing.
+ *
+ * NO HEALTH CLAIMS. pH, mineral content and ORP are stated as measurements of
+ * the water only. Nothing here asserts a physiological, medical or health
+ * effect, and nothing should be added that does.
  */
 
 export const TODO_VERIFY = 'TODO_VERIFY' as const
@@ -28,6 +43,12 @@ export interface Spec {
   value: SpecValue
   /** Optional clarifying line shown under the value. */
   note?: string
+  /**
+   * Sourced from brand copy rather than the specification sheet. Renders
+   * normally, but is counted in the development note so it stays on the
+   * list of things to confirm.
+   */
+  needsConfirmation?: boolean
 }
 
 export type SpecGroup = 'filtration' | 'design' | 'water' | 'ownership'
@@ -63,6 +84,7 @@ export const SPECS: Spec[] = [
     label: 'Filtration stages',
     value: '5-stage reverse osmosis',
     note: 'Sediment and carbon pre-filtration, RO membrane, then mineralization.',
+    needsConfirmation: true,
   },
   {
     id: 'reduction',
@@ -70,6 +92,14 @@ export const SPECS: Spec[] = [
     label: 'Contaminant reduction',
     value: 'Up to 98%',
     note: 'Of common tap-water contaminants, including many heavy metals and chemicals.',
+    needsConfirmation: true,
+  },
+  {
+    id: 'chlorine',
+    group: 'filtration',
+    label: 'Chlorine',
+    value: 'Chlorine reduction',
+    note: 'Handled by the carbon stage ahead of the membrane.',
   },
   {
     id: 'membrane',
@@ -78,13 +108,21 @@ export const SPECS: Spec[] = [
     value: 'Reverse osmosis membrane',
   },
   {
-    id: 'certifications',
+    id: 'media-certification',
     group: 'filtration',
-    // TODO_VERIFY: confirm NSF/ANSI 58 / 42 / 372 or WQA certification and
-    // exact certifying body before publishing any certification claim.
-    label: 'Certifications',
+    label: 'Carbon media certification',
+    value: 'NSF/ANSI 42 and NSF/ANSI 61',
+    note: 'These certifications apply to the carbon filtration media, not to the assembled system.',
+  },
+  {
+    id: 'system-certification',
+    group: 'filtration',
+    // TODO_VERIFY: whole-system certification (e.g. NSF/ANSI 58) and the
+    // certifying body. Kept as its own row so the media certification above
+    // is never read as covering the complete system.
+    label: 'Whole-system certification',
     value: TODO_VERIFY,
-    note: 'Certification marks are only shown once confirmed in writing.',
+    note: 'Separate from the media certification above, and not yet confirmed.',
   },
 
   // ---- Design & installation ---------------------------------------------
@@ -105,15 +143,15 @@ export const SPECS: Spec[] = [
   {
     id: 'dimensions',
     group: 'design',
-    // TODO_VERIFY: measure or confirm H x W x D of the main unit.
     label: 'Dimensions',
-    value: TODO_VERIFY,
+    value: '10.24 × 20.5 × 23.62 in',
+    note: 'Length × width × height. Measure your cabinet before ordering.',
   },
   {
     id: 'installation',
     group: 'design',
-    // TODO_VERIFY: confirm DIY vs. plumber, and whether an electrical outlet
-    // under the sink is required for the booster pump.
+    // TODO_VERIFY: DIY vs. plumber, and whether an outlet is required under
+    // the sink for the booster pump.
     label: 'Installation',
     value: TODO_VERIFY,
   },
@@ -123,8 +161,8 @@ export const SPECS: Spec[] = [
     id: 'alkaline',
     group: 'water',
     label: 'Alkaline output',
-    value: 'Up to pH 8–9',
-    note: 'The mineralization stage raises pH after purification.',
+    value: 'Above 7.5 pH',
+    note: 'The mineralization stage rebalances pH after purification.',
   },
   {
     id: 'minerals',
@@ -133,16 +171,25 @@ export const SPECS: Spec[] = [
     value: 'Calcium, magnesium, potassium',
   },
   {
+    id: 'orp',
+    group: 'water',
+    label: 'Oxidation reduction potential',
+    // Stated as a measured electrochemical property of the water. No claim
+    // about what it does for anyone is made, or may be added.
+    value: '−100 to −200 mV',
+    note: 'A measurement of the water itself.',
+  },
+  {
     id: 'gpd',
     group: 'water',
-    // TODO_VERIFY: confirm the rated gallons-per-day of the membrane.
+    // TODO_VERIFY: rated gallons per day of the membrane.
     label: 'Production rate (GPD)',
     value: TODO_VERIFY,
   },
   {
     id: 'efficiency',
     group: 'water',
-    // TODO_VERIFY: confirm the pure-to-drain ratio.
+    // TODO_VERIFY: pure-to-drain ratio.
     label: 'Water efficiency',
     value: TODO_VERIFY,
     note: 'Pure-to-drain ratio pending confirmation.',
@@ -155,6 +202,7 @@ export const SPECS: Spec[] = [
     label: 'Filter life',
     value: '6–12 months',
     note: 'About 6 months for a household of four; about 12 months for one or two.',
+    needsConfirmation: true,
   },
   {
     id: 'warranty',
@@ -177,6 +225,9 @@ export const SPECS: Spec[] = [
     note: 'Reduced-rate shipping available to Alaska and Hawaii.',
   },
 ]
+
+/** Claims carried over from brand copy that still need sign-off. */
+export const UNCONFIRMED_SPECS = SPECS.filter((spec) => spec.needsConfirmation)
 
 export const specsByGroup = (group: SpecGroup): Spec[] =>
   SPECS.filter((spec) => spec.group === group)

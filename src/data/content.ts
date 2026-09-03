@@ -135,14 +135,14 @@ export const PROBLEM_POINTS = [
  */
 export const KEY_BENEFITS = [
   {
-    id: 'reduction',
-    title: 'Up to 98% contaminant reduction',
-    body: 'Of common tap-water contaminants, including many heavy metals and chemicals.',
+    id: 'alkaline',
+    title: 'Alkaline, above 7.5 pH',
+    body: 'Purified first, then rebalanced above 7.5 pH and enriched with calcium, magnesium and potassium.',
   },
   {
-    id: 'minerals',
-    title: 'Minerals put back',
-    body: 'Calcium, magnesium and potassium are reintroduced after purification, bringing the water to roughly pH 8–9.',
+    id: 'chlorine',
+    title: 'Chlorine reduction through certified media',
+    body: 'The carbon stage reduces chlorine ahead of the membrane. That media is certified to NSF/ANSI 42 and NSF/ANSI 61.',
   },
   {
     id: 'tankless',
@@ -153,5 +153,42 @@ export const KEY_BENEFITS = [
     id: 'warranty',
     title: 'Covered for life',
     body: 'A lifetime warranty with product registration, backed by a 100% satisfaction guarantee.',
+  },
+  {
+    // Sourced from published brand copy rather than the specification sheet;
+    // flagged in specs.ts as needing sign-off, so it follows the verified
+    // items above rather than leading them.
+    id: 'reduction',
+    title: 'Up to 98% contaminant reduction',
+    body: 'Of common tap-water contaminants, including many heavy metals and chemicals.',
+  },
+] as const
+
+/**
+ * The measured chemistry of the finished water, for the mineralization
+ * section.
+ *
+ * These are measurements, and the copy treats them as nothing else. No
+ * physiological, medical or health effect is claimed for pH, for the minerals
+ * or for ORP, and none may be added.
+ */
+export const WATER_CHEMISTRY = [
+  {
+    id: 'ph',
+    label: 'pH',
+    value: 'Above 7.5',
+    note: 'Rebalanced after purification.',
+  },
+  {
+    id: 'minerals',
+    label: 'Minerals',
+    value: 'Ca · Mg · K',
+    note: 'Calcium, magnesium and potassium.',
+  },
+  {
+    id: 'orp',
+    label: 'ORP',
+    value: '−100 to −200 mV',
+    note: 'Oxidation reduction potential, measured in millivolts.',
   },
 ] as const

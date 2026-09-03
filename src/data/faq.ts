@@ -32,17 +32,33 @@ export const FAQ: FaqItem[] = [
     topic: 'water',
     question: 'Reverse osmosis strips minerals. Does this put them back?',
     answer:
-      'Yes. That is the last stage. After the membrane, calcium, magnesium and potassium are reintroduced, which brings the water to roughly pH 8–9. It is the difference between water that is merely pure and water that tastes like something.',
+      'Yes. That is the last stage. After the membrane, calcium, magnesium and potassium are reintroduced, which rebalances the water to above 7.5 pH. It is the difference between water that is merely pure and water that tastes like something.',
   },
   {
     id: 'alkaline',
     topic: 'water',
     question: 'How alkaline is the water?',
     answer:
-      'Up to pH 8–9, set by the mineralization stage after purification.',
+      'Above 7.5 pH. The mineralization stage rebalances it after purification.',
+  },
+  {
+    id: 'orp',
+    topic: 'water',
+    question: 'What is the ORP of the water?',
+    // A measured electrochemical property, stated as such. Do not add a
+    // claim about what it does for a person -- that would be a health claim.
+    answer:
+      'The oxidation reduction potential measures between −100 and −200 mV. It is a property of the water, measured in millivolts.',
   },
 
   // ---- The system itself ---------------------------------------------------
+  {
+    id: 'chlorine',
+    topic: 'water',
+    question: 'Does it deal with chlorine?',
+    answer:
+      'Yes. Chlorine reduction is handled by the carbon stage before water reaches the reverse osmosis membrane. It is the stage most responsible for how the water tastes.',
+  },
   {
     id: 'tankless',
     topic: 'system',
@@ -95,7 +111,7 @@ export const FAQ: FaqItem[] = [
       'Free to the contiguous 48 states. Alaska and Hawaii ship at a reduced rate.',
   },
 
-  // ---- Known questions we cannot answer yet -------------------------------
+  // ---- Known questions we still cannot answer -----------------------------
   // These stay in the data so the gap is tracked, and stay OUT of the page so
   // no shopper is told something unverified. Fill the answer in to publish.
   {
@@ -109,9 +125,10 @@ export const FAQ: FaqItem[] = [
     id: 'certification',
     topic: 'water',
     question: 'Is it certified?',
-    // TODO_VERIFY: certifying body and standard (e.g. NSF/ANSI 58, 42, 372).
-    // Do not publish any certification claim until confirmed in writing.
-    answer: null,
+    // Scope matters: the certification covers the carbon media only. Do not
+    // reword this into a claim about the assembled system.
+    answer:
+      'The carbon filtration media is certified to NSF/ANSI 42 and NSF/ANSI 61. That certification covers the media, not the assembled system — we do not claim a whole-system certification, and will not until one is confirmed.',
   },
   {
     id: 'efficiency',
@@ -131,8 +148,8 @@ export const FAQ: FaqItem[] = [
     id: 'dimensions',
     topic: 'system',
     question: 'Will it fit under my sink?',
-    // TODO_VERIFY: H x W x D of the unit.
-    answer: null,
+    answer:
+      'The unit measures 10.24 in long by 20.5 in wide by 23.62 in high. Cabinets vary, so measure the space under your sink — including the trap and any disposal — against those figures before ordering.',
   },
   {
     id: 'return-window',

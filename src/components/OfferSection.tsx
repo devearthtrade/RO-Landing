@@ -39,7 +39,7 @@ export function OfferSection() {
           id="offer-heading"
           eyebrow="The offer"
           title="One system. Covered for life."
-          lead="Reverse osmosis, alkaline mineralization and a lifetime warranty — for a single price, shipped free."
+          lead="Tankless reverse osmosis. Water rebalanced above 7.5 pH with calcium, magnesium and potassium. Chlorine reduced through carbon media certified to NSF/ANSI 42 and 61 — and a lifetime warranty behind all of it."
           width="wide"
         />
 
