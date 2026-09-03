@@ -1,0 +1,141 @@
+.frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--deep);
+  isolation: isolate;
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Overridden per section so portrait screens crop to the product, not the
+     empty edges of a landscape frame. */
+  object-position: var(--video-position, 50% 50%);
+  opacity: 0;
+  transition: opacity var(--dur-slow) var(--ease-out);
+}
+
+.videoReady {
+  opacity: 1;
+}
+
+/* ---- Placeholder ---------------------------------------------------------
+   Shown before the file loads and, permanently, if it never arrives. It is a
+   composed surface rather than a grey box, so a missing asset still reads as
+   part of the design. */
+.placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(120% 90% at 70% 15%, rgba(111, 182, 208, 0.22), transparent 62%),
+    radial-gradient(90% 70% at 20% 90%, rgba(18, 64, 95, 0.5), transparent 60%),
+    linear-gradient(168deg, #14202e 0%, #0b1420 55%, #091120 100%);
+}
+
+.placeholderPending::after {
+  /* A slow sheen, so a loading frame does not read as a broken one. */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 35%,
+    rgba(207, 228, 236, 0.09) 50%,
+    transparent 65%
+  );
+  background-size: 250% 100%;
+  animation: sheen 2.6s var(--ease-in-out) infinite;
+}
+
+@keyframes sheen {
+  from {
+    background-position: 130% 0;
+  }
+  to {
+    background-position: -30% 0;
+  }
+}
+
+.placeholderNote {
+  position: relative;
+  z-index: 1;
+  max-width: 30ch;
+  padding: 0 1.5rem;
+  text-align: center;
+  font-size: var(--step-small);
+  letter-spacing: 0.04em;
+  color: rgba(238, 241, 244, 0.62);
+}
+
+.placeholderMark {
+  display: block;
+  margin: 0 auto 0.9rem;
+  width: 28px;
+  height: 34px;
+  opacity: 0.6;
+}
+
+/* ---- Scrim ---------------------------------------------------------------
+   Keeps overlaid type legible without flattening the product. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.scrimBottom {
+  background: linear-gradient(
+    to top,
+    rgba(6, 12, 20, 0.78) 0%,
+    rgba(6, 12, 20, 0.42) 26%,
+    rgba(6, 12, 20, 0.06) 52%,
+    transparent 72%
+  );
+}
+
+.scrimLeft {
+  background: linear-gradient(
+    to right,
+    rgba(6, 12, 20, 0.72) 0%,
+    rgba(6, 12, 20, 0.3) 34%,
+    transparent 62%
+  );
+}
+
+.scrimSoft {
+  background: linear-gradient(to top, rgba(6, 12, 20, 0.45), rgba(6, 12, 20, 0.08) 55%, transparent);
+}
+
+.scrimNone {
+  display: none;
+}
+
+/* ---- Reduced-motion play control ----------------------------------------- */
+.playToggle {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  font-size: var(--step-small);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #eef1f4;
+  background: rgba(9, 17, 28, 0.62);
+  border: 1px solid rgba(238, 241, 244, 0.28);
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+  transition: background var(--dur) var(--ease-out);
+}
+
+.playToggle:hover {
+  background: rgba(9, 17, 28, 0.85);
+}

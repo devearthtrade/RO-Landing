@@ -1,0 +1,15 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+.vite
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+
+# Video assets are large binaries — keep them out of git.
+# Drop the 8 .mp4 files into public/videos/ locally or serve them from a CDN.
+public/videos/*.mp4
+public/videos/*.webm

@@ -1,0 +1,85 @@
+.list {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--line);
+}
+
+[data-theme='deep'] .list {
+  border-top-color: var(--deep-line);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.15rem 1.5rem;
+  padding-block: clamp(0.9rem, 2vh, 1.2rem);
+  border-bottom: 1px solid var(--line);
+}
+
+[data-theme='deep'] .row {
+  border-bottom-color: var(--deep-line);
+}
+
+.label {
+  font-size: var(--step-small);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+[data-theme='deep'] .label {
+  color: var(--on-deep-muted);
+}
+
+.value {
+  font-size: var(--step-h3);
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.2;
+}
+
+.note {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: var(--step-small);
+  line-height: 1.5;
+  color: var(--ink-muted);
+  max-width: 46ch;
+}
+
+[data-theme='deep'] .note {
+  color: var(--on-deep-muted);
+}
+
+/* A spec awaiting sign-off states that plainly. It never shows a number. */
+.pending {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--step-body);
+  font-weight: 400;
+  color: var(--ink-muted);
+}
+
+[data-theme='deep'] .pending {
+  color: var(--on-deep-muted);
+}
+
+.pendingDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--ink-faint);
+  flex: none;
+}
+
+@media (min-width: 640px) {
+  .row {
+    grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
+    align-items: baseline;
+  }
+
+  .label {
+    padding-top: 0.35rem;
+  }
+}

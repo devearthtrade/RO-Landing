@@ -1,0 +1,42 @@
+.minerals {
+  display: grid;
+  gap: 1px;
+  background-color: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.mineral {
+  display: grid;
+  gap: 0.2rem;
+  padding: clamp(1.1rem, 2.5vh, 1.5rem) clamp(1.1rem, 2.5vw, 1.6rem);
+  background-color: var(--paper-raised);
+}
+
+.symbol {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--blue);
+  line-height: 1;
+}
+
+.name {
+  font-size: var(--step-body);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.note {
+  font-size: var(--step-small);
+  color: var(--ink-muted);
+  line-height: 1.5;
+}
+
+@media (min-width: 520px) {
+  .minerals {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

@@ -1,0 +1,25 @@
+.footer {
+  padding-block: clamp(2.5rem, 6vh, 4rem);
+  /* Clears the sticky purchase bar so nothing is trapped behind it. */
+  padding-bottom: calc(clamp(2.5rem, 6vh, 4rem) + var(--cart-bar-h));
+  background-color: var(--deep);
+  color: var(--on-deep-muted);
+  font-size: var(--step-small);
+}
+
+.inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.disclaimer {
+  max-width: 68ch;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--deep-line);
+  line-height: 1.6;
+  color: rgba(157, 171, 185, 0.8);
+}

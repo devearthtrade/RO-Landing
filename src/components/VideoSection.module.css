@@ -1,0 +1,70 @@
+.section {
+  position: relative;
+  padding-block: var(--section-y);
+}
+
+.deep {
+  background-color: var(--deep);
+  color: var(--on-deep);
+}
+
+.sunk {
+  background-color: var(--paper-sunk);
+}
+
+.grid {
+  display: grid;
+  gap: clamp(2.2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+.media {
+  position: relative;
+  /* Portrait crop on phones: a 16:9 letterbox wastes the screen. */
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+
+.deep .media {
+  box-shadow: none;
+  border: 1px solid var(--deep-line);
+}
+
+.body {
+  min-width: 0;
+}
+
+.extras {
+  margin-top: clamp(1.8rem, 4vh, 2.8rem);
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(3rem, 6vw, 6rem);
+    /* `start`, not `center`: a centred grid item gives a sticky child no
+       travel inside its grid area. */
+    align-items: start;
+  }
+
+  .media {
+    aspect-ratio: 3 / 4;
+    /* The film stays put while the copy passes it — a small camera move, not
+       a whole pinned section. */
+    position: sticky;
+    top: calc(var(--header-h) + 3vh);
+    max-height: 76vh;
+  }
+
+  .mediaLeft .media {
+    order: -1;
+  }
+}
+
+@media (min-width: 1200px) {
+  .media {
+    aspect-ratio: 4 / 5;
+  }
+}

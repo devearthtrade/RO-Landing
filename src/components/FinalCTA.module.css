@@ -1,0 +1,96 @@
+.section {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  background-color: var(--deep);
+  color: var(--on-deep);
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding-block: clamp(3rem, 10vh, 6rem);
+}
+
+.inner {
+  max-width: 34ch;
+}
+
+.headline {
+  font-size: var(--step-display);
+  font-weight: 500;
+  letter-spacing: var(--tracking-display);
+  line-height: 0.95;
+  text-shadow: 0 1px 30px rgba(6, 12, 20, 0.45);
+}
+
+.product {
+  margin-top: clamp(1.2rem, 2.6vh, 1.8rem);
+  font-size: var(--step-lead);
+  line-height: 1.4;
+  color: rgba(238, 241, 244, 0.84);
+  max-width: 26ch;
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-top: clamp(1.2rem, 2.6vh, 1.8rem);
+}
+
+.price {
+  font-size: clamp(1.9rem, 1.3rem + 1.6vw, 2.6rem);
+  font-weight: 500;
+  letter-spacing: var(--tracking-display);
+}
+
+.actions {
+  margin-top: clamp(1.6rem, 3.5vh, 2.4rem);
+}
+
+.assurances {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-top: clamp(1.4rem, 3vh, 2rem);
+  padding: 0;
+  list-style: none;
+  font-size: var(--step-small);
+  color: rgba(238, 241, 244, 0.68);
+}
+
+.assurance {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.tick {
+  width: 13px;
+  height: 13px;
+  flex: none;
+  color: var(--aqua);
+}
+
+@media (max-width: 639px) {
+  .inner {
+    max-width: none;
+  }
+
+  .actions > * {
+    width: 100%;
+  }
+
+  .assurances {
+    gap: 0.45rem 1.1rem;
+  }
+}

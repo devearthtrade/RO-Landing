@@ -1,0 +1,83 @@
+.bar {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 95;
+  padding-bottom: env(safe-area-inset-bottom);
+  background-color: rgba(251, 250, 248, 0.94);
+  backdrop-filter: saturate(1.4) blur(16px);
+  border-top: 1px solid var(--line-soft);
+  transform: translateY(110%);
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.visible {
+  transform: translateY(0);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: var(--cart-bar-h);
+  padding-block: 0.7rem;
+}
+
+.identity {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.name {
+  /* Hidden on small screens: the price and the action are what matter there. */
+  display: none;
+  font-size: var(--step-small);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.price {
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  color: var(--ink);
+}
+
+.note {
+  display: none;
+  font-size: var(--step-small);
+  color: var(--ink-muted);
+}
+
+.action {
+  flex: 0 1 auto;
+}
+
+/* Touch target stays comfortable and the CTA takes the room it needs. */
+.action button {
+  min-height: 48px;
+  padding-inline: 1.4rem;
+}
+
+@media (min-width: 640px) {
+  .name {
+    display: block;
+  }
+
+  .action button {
+    padding-inline: 2.1rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .note {
+    display: block;
+  }
+}

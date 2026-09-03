@@ -1,0 +1,119 @@
+/* ---- Lead-in --------------------------------------------------------------
+   A quiet typographic bridge out of the hero, so the pinned reveal does not
+   start cold. */
+.intro {
+  background-color: var(--deep);
+  color: var(--on-deep);
+  padding-block: clamp(6rem, 16vh, 12rem);
+}
+
+.introInner {
+  max-width: 34ch;
+}
+
+.introStatement {
+  font-size: var(--step-h2);
+  font-weight: 500;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.06;
+  margin-top: clamp(1.2rem, 2.5vh, 2rem);
+}
+
+.introStatement em {
+  font-style: normal;
+  color: var(--aqua);
+}
+
+/* ---- Pinned stage --------------------------------------------------------- */
+.stage {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  background-color: var(--deep);
+  color: var(--on-deep);
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+}
+
+.overlay {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  align-items: flex-start;
+  padding-top: calc(var(--header-h) + clamp(2rem, 8vh, 5rem));
+  pointer-events: none;
+}
+
+.copy {
+  max-width: 32ch;
+}
+
+.copy h2 {
+  font-size: var(--step-h2);
+  font-weight: 500;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.0;
+  text-shadow: 0 1px 26px rgba(6, 12, 20, 0.5);
+}
+
+.copy p {
+  margin-top: clamp(0.9rem, 2vh, 1.4rem);
+  font-size: var(--step-lead);
+  line-height: 1.45;
+  color: rgba(238, 241, 244, 0.82);
+  max-width: 30ch;
+}
+
+/* ---- Progress ------------------------------------------------------------- */
+.progress {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: clamp(1.6rem, 5vh, 3rem);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: var(--step-eyebrow);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: rgba(238, 241, 244, 0.55);
+}
+
+.track {
+  position: relative;
+  flex: 1;
+  height: 1px;
+  background-color: rgba(238, 241, 244, 0.2);
+  overflow: hidden;
+}
+
+.fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 100%;
+  background-color: var(--aqua);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+@media (min-width: 900px) {
+  .overlay {
+    align-items: center;
+    padding-top: 0;
+  }
+
+  .copy {
+    max-width: 26ch;
+  }
+}
+
+@media (max-width: 639px) {
+  .copy h2 {
+    line-height: 1.04;
+  }
+}

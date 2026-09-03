@@ -1,0 +1,31 @@
+.block {
+  max-width: 44ch;
+}
+
+.wide {
+  max-width: 58ch;
+}
+
+.centered {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.eyebrow {
+  margin-bottom: clamp(0.9rem, 1.6vh, 1.3rem);
+}
+
+.title {
+  font-size: var(--step-h2);
+  font-weight: 500;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.0;
+}
+
+.lead {
+  margin-top: clamp(1rem, 2vh, 1.5rem);
+}
+
+.centered .lead {
+  margin-inline: auto;
+}
