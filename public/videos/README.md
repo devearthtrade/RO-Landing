@@ -39,5 +39,30 @@ ffmpeg -i source.mov -an -c:v libx264 -profile:v high -crf 22 -g 5 \
   -pix_fmt yuv420p -movflags +faststart 02-system-open.mp4
 ```
 
-`*.mp4` in this directory is gitignored — these files belong in a CDN or in
-your deployment pipeline, not in git history.
+## Status of the committed files
+
+Measured directly from the MP4 headers of the eight files in this directory:
+
+| Property | State |
+| --- | --- |
+| Container / codec | MP4, H.264 (`avc1`) — correct |
+| Duration | 8.0s (hero), 5.17s (all others) |
+| `moov` position | **Fixed.** Was after `mdat` on all eight; losslessly remuxed so the header loads first |
+| Keyframes | **1 per file.** Needs re-export — see below |
+| Audio track | An `mp4a` track is present on all eight |
+
+Two things are worth correcting at the source, in whatever exports these:
+
+1. **Keyframes.** Every file currently contains exactly one keyframe (its
+   first frame). For the seven clips that simply loop, that is harmless. For
+   `02-system-open.mp4`, which is scrubbed by scroll position, it means the
+   decoder replays from frame 0 on every seek. The page detects this at
+   runtime and falls back to ordinary playback rather than stuttering, but
+   the scroll-driven reveal only works as designed once the clip is
+   re-exported with `-g 5`.
+
+2. **Audio.** Every video on the page is muted, so the `mp4a` track is
+   bytes nobody will ever hear. `-an` removes it.
+
+Both are single flags on the export — see the commands above. Re-exporting
+also restores `+faststart`, which the remux applied by hand this time.

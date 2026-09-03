@@ -26,17 +26,22 @@ export function SystemReveal() {
   const reducedMotion = useReducedMotion()
   const isDesktop = useIsDesktop()
   const [videoState, setVideoState] = useState<VideoState>('idle')
+  const [seekTooSlow, setSeekTooSlow] = useState(false)
 
   // Scrubbing seeks a video file on every frame. That is fine on a desktop
   // with the file buffered and wrong on a phone, so pinning is desktop-only.
-  const scrubEnabled = isDesktop && !reducedMotion
+  // It also depends on the encode: a clip with sparse keyframes has to replay
+  // from the previous keyframe on every seek, so the hook measures real seek
+  // cost and tells us to stand down when scrubbing would stutter.
+  const scrubIntent = isDesktop && !reducedMotion && !seekTooSlow
 
   // The <video> is not mounted until the section nears the viewport, and a
   // missing file never becomes ready at all. Pin only once there is something
   // to scrub — otherwise the section stays a normal, scrollable panel.
-  const pinned = scrubEnabled && videoState === 'ready'
+  const pinned = scrubIntent && videoState === 'ready'
 
   const handleVideoState = useCallback((next: VideoState) => setVideoState(next), [])
+  const handleSlowSeek = useCallback(() => setSeekTooSlow(true), [])
 
   useRevealOnScroll(introRef, { disabled: reducedMotion })
 
@@ -45,6 +50,7 @@ export function SystemReveal() {
     triggerRef: stageRef,
     distance: 2.4,
     disabled: !pinned,
+    onSlowSeek: handleSlowSeek,
   })
 
   // Progress bar, driven by the same scroll range as the scrub.
@@ -88,7 +94,7 @@ export function SystemReveal() {
         <div className={styles.media}>
           <CinematicVideo
             asset={VIDEOS.systemOpen}
-            scrub={scrubEnabled}
+            scrub={scrubIntent}
             videoRef={videoRef}
             onStateChange={handleVideoState}
             scrim={isDesktop ? 'left' : 'bottom'}

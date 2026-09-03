@@ -9,7 +9,6 @@ dist-ssr
 .env.*
 !.env.example
 
-# Video assets are large binaries — keep them out of git.
-# Drop the 8 .mp4 files into public/videos/ locally or serve them from a CDN.
-public/videos/*.mp4
-public/videos/*.webm
+# The 8 product videos are committed (~14 MB total). If they grow, move them
+# to a CDN and re-add an ignore rule here — a rule alone would not untrack
+# files that are already in history.

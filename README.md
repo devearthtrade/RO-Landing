@@ -42,16 +42,18 @@ Put the eight `.mp4` files in **`public/videos/`** using these exact names:
 | `07-lifestyle.mp4` | Better water belongs in your home. |
 | `08-final.mp4` | Your water. Upgraded. |
 
-`public/videos/README.md` has the encoding recipe. Two things matter most:
+The eight files are committed to this repo (~14 MB total).
+`public/videos/README.md` has the encoding recipe and the measured state of
+the current files. Two things matter most:
 
 - Encode with `-movflags +faststart` so playback can begin before the whole
-  file arrives.
+  file arrives. Without it, `preload="metadata"` has to fetch the entire
+  video just to read its duration, which defeats the lazy-loading below.
 - `02-system-open.mp4` is **scrubbed by scroll position**, which means the
-  browser seeks it constantly. Give it dense keyframes (`-g 5`) and keep it
-  short, or the scrub will stutter.
-
-`*.mp4` is gitignored — these belong in a CDN or your deploy pipeline, not in
-git history.
+  browser seeks it constantly. Give it dense keyframes (`-g 5`), or the
+  scrub will stutter. The current export has a single keyframe; the page
+  detects slow seeking and falls back to playback, but the scroll-driven
+  reveal needs a re-export to work as designed.
 
 ## 2. Where the poster images go
 

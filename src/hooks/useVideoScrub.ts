@@ -9,7 +9,19 @@ interface Options {
   distance?: number
   /** Skip the scrub entirely (reduced motion, small screens, missing file). */
   disabled?: boolean
+  /**
+   * Called when seeking turns out to be too slow to scrub smoothly, so the
+   * caller can unpin and let the clip play instead.
+   */
+  onSlowSeek?: () => void
 }
+
+/**
+ * Seeking is only cheap when the clip has frequent keyframes; with a sparse
+ * one the decoder replays from the last keyframe on every seek. Past this
+ * median, a scrub reads as a stutter and playback is the better experience.
+ */
+const SLOW_SEEK_MS = 150
 
 /**
  * Maps scroll progress onto a video's `currentTime` while its section is
@@ -24,6 +36,7 @@ export function useVideoScrub({
   triggerRef,
   distance = 2.2,
   disabled = false,
+  onSlowSeek,
 }: Options): void {
   useEffect(() => {
     const video = videoRef.current
@@ -34,6 +47,23 @@ export function useVideoScrub({
     let frame = 0
     let targetTime = 0
 
+    // Measure how expensive seeking actually is on this file.
+    let seekStartedAt = 0
+    let verdictReached = false
+    const samples: number[] = []
+
+    const onSeeked = () => {
+      if (!seekStartedAt || verdictReached) return
+      samples.push(performance.now() - seekStartedAt)
+      seekStartedAt = 0
+      // Ignore the first seek: it carries one-off decoder warm-up.
+      if (samples.length < 4) return
+      verdictReached = true
+      const timed = samples.slice(1).sort((a, b) => a - b)
+      const median = timed[Math.floor(timed.length / 2)] ?? 0
+      if (median > SLOW_SEEK_MS) onSlowSeek?.()
+    }
+
     const seek = () => {
       frame = 0
       if (!Number.isFinite(targetTime)) return
@@ -42,8 +72,11 @@ export function useVideoScrub({
         frame = requestAnimationFrame(seek)
         return
       }
+      if (!verdictReached) seekStartedAt = performance.now()
       video.currentTime = targetTime
     }
+
+    video.addEventListener('seeked', onSeeked)
 
     const setup = () => {
       const duration = video.duration
@@ -78,10 +111,11 @@ export function useVideoScrub({
 
     return () => {
       video.removeEventListener('loadedmetadata', setup)
+      video.removeEventListener('seeked', onSeeked)
       if (frame) cancelAnimationFrame(frame)
       scrollTrigger?.kill()
     }
-  }, [videoRef, triggerRef, distance, disabled])
+  }, [videoRef, triggerRef, distance, disabled, onSlowSeek])
 }
 
 /**
