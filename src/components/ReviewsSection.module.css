@@ -3,18 +3,28 @@
   background-color: var(--paper-sunk);
 }
 
+/* A paragraph, not a row of items. As a flex container each run of text and
+   each inline element became its own non-shrinkable flex item on a single
+   line, forcing ~415px of min-content width and scrolling the page sideways
+   on phones. */
 .banner {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
   margin-top: clamp(1.6rem, 3vh, 2.2rem);
   padding: 0.7rem 1rem;
   font-size: var(--step-small);
+  line-height: 1.55;
   letter-spacing: 0.04em;
   color: #7a5a12;
   background-color: #fdf4dd;
   border: 1px solid #ecdcae;
   border-radius: var(--radius);
+  /* `src/data/reviews.ts` is one unbreakable token; let it break rather than
+     push the layout wider than the screen. */
+  overflow-wrap: anywhere;
+}
+
+.banner code {
+  font-family: var(--font-mono);
+  font-size: 0.95em;
 }
 
 .grid {

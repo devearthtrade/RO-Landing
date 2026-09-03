@@ -59,8 +59,8 @@ export function ReviewsSection() {
 
         {REVIEWS_ARE_PLACEHOLDER ? (
           <p className={styles.banner} data-reveal>
-            <strong>Placeholder content.</strong>&nbsp;These are not real customer reviews. Connect
-            a review source in <code>src/data/reviews.ts</code> before launch.
+            <strong>Placeholder content.</strong> These are not real customer reviews. Connect a
+            review source in <code>src/data/reviews.ts</code> before launch.
           </p>
         ) : null}
 
