@@ -27,21 +27,25 @@ export function TrustSection() {
             id="warranty-heading"
             eyebrow="Ownership"
             title="Built for the long run."
-            lead="A lifetime warranty, a satisfaction guarantee, and filters you change once or twice a year."
+            lead="A lifetime warranty, a satisfaction guarantee, and terms you can read in full before you buy."
           />
 
           <div className={styles.items}>
             {TRUST_ITEMS.map((item) => (
               <div className={styles.item} key={item.id} data-reveal>
                 <h3 className={styles.itemTitle}>{item.title}</h3>
-                {item.body ? (
-                  <p className={styles.itemBody}>{item.body}</p>
-                ) : (
-                  <p className={styles.pending}>
-                    <span className={styles.pendingDot} aria-hidden="true" />
-                    Details pending verification
-                  </p>
-                )}
+                <p
+                  className={[styles.itemBody, item.pending ? styles.itemPending : '']
+                    .filter(Boolean)
+                    .join(' ')}
+                >
+                  {item.body}
+                </p>
+                {item.href ? (
+                  <a className={styles.itemLink} href={item.href}>
+                    {item.hrefLabel ?? 'Read more'}
+                  </a>
+                ) : null}
               </div>
             ))}
           </div>

@@ -6,13 +6,18 @@
  * than as an invented promise.
  */
 
+import { RETURN_POLICY_URL, WARRANTY_URL } from './product'
+
 export interface TrustItem {
   id: string
   title: string
-  /** `null` means: not yet verified. Do not fill this in with a guess. */
-  body: string | null
-  /** Optional link to the authoritative policy page. */
+  body: string
+  /** Optional link to the authoritative policy page on the storefront. */
   href?: string
+  /** Label for the link, when one is present. */
+  hrefLabel?: string
+  /** True when `body` carries a `{Required data: ...}` placeholder. */
+  pending?: boolean
 }
 
 export const TRUST_ITEMS: TrustItem[] = [
@@ -20,7 +25,8 @@ export const TRUST_ITEMS: TrustItem[] = [
     id: 'warranty',
     title: 'Lifetime warranty',
     body: 'The system is covered by a lifetime warranty when you register your product after installation.',
-    // TODO_VERIFY: link the warranty registration / terms page.
+    href: WARRANTY_URL,
+    hrefLabel: 'Register your product',
   },
   {
     id: 'guarantee',
@@ -36,8 +42,12 @@ export const TRUST_ITEMS: TrustItem[] = [
   {
     id: 'returns',
     title: 'Returns',
-    // TODO_VERIFY: return window, who pays return freight, restocking fee.
-    body: null,
+    // No window is printed here on purpose. The only figure ever found was a
+    // 30-day guarantee on the alkaline water PITCHER pages, which is a
+    // different product. The store policy is the authority, so we link it.
+    body: 'Return terms, the return window and who covers return shipping are set out in the store return policy.',
+    href: RETURN_POLICY_URL,
+    hrefLabel: 'Read the return policy',
   },
   {
     id: 'certification',
@@ -50,7 +60,8 @@ export const TRUST_ITEMS: TrustItem[] = [
   {
     id: 'support',
     title: 'Customer support',
-    // TODO_VERIFY: support channels and hours.
-    body: null,
+    // Do not invent channels or hours.
+    body: '{Required data: support channels and hours}',
+    pending: true,
   },
 ]

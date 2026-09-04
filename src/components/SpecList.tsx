@@ -22,9 +22,12 @@ export function SpecList({ specs }: Props) {
             <dt className={styles.label}>{spec.label}</dt>
             <dd className={styles.value}>
               {pending ? (
+                // The literal placeholder is shown rather than a vague
+                // "pending" label, so a reviewer can see exactly which value
+                // is outstanding and it can never read as a real figure.
                 <span className={styles.pending}>
                   <span className={styles.pendingDot} aria-hidden="true" />
-                  Pending verification
+                  {spec.value}
                 </span>
               ) : (
                 spec.value

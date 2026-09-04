@@ -289,16 +289,3 @@ export const VIDEO_MANIFEST: Record<string, VideoManifestEntry> = {
     closingFrameFits: null,
   },
 }
-
-export const ALL_VIDEOS = Object.values(VIDEO_MANIFEST)
-
-/** Total bytes if every clip were fetched. The page never does this. */
-export const TOTAL_PAYLOAD_MB = Number(
-  ALL_VIDEOS.reduce((sum, v) => sum + v.fileSizeMB, 0).toFixed(2),
-)
-
-/** Clips whose encode still blocks scroll scrubbing. */
-export const NOT_SCRUB_ELIGIBLE = ALL_VIDEOS.filter((v) => !v.scrubEligible)
-
-/** Clips shipping without a poster image. */
-export const MISSING_POSTERS = ALL_VIDEOS.filter((v) => v.poster === null)

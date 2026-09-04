@@ -68,3 +68,20 @@
     padding-inline: 0;
   }
 }
+
+.itemPending {
+  color: var(--ink-muted);
+}
+
+.itemLink {
+  display: inline-block;
+  margin-top: 0.6rem;
+  font-size: var(--step-small);
+  color: var(--blue);
+  text-decoration-color: rgba(43, 109, 146, 0.4);
+  transition: text-decoration-color var(--dur) var(--ease-out);
+}
+
+.itemLink:hover {
+  text-decoration-color: var(--blue);
+}

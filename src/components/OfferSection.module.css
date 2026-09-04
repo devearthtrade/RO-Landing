@@ -142,3 +142,12 @@
     top: calc(var(--header-h) + 4vh);
   }
 }
+
+.includedLink {
+  color: var(--aqua);
+  text-decoration-color: rgba(111, 182, 208, 0.45);
+}
+
+.includedLink:hover {
+  text-decoration-color: var(--aqua);
+}

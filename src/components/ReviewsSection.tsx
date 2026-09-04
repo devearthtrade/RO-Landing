@@ -1,10 +1,6 @@
 import { useRef } from 'react'
-import {
-  AGGREGATE_RATING,
-  REVIEWS,
-  REVIEWS_ARE_PLACEHOLDER,
-  type Review,
-} from '../data/reviews'
+import { AGGREGATE_RATING, REVIEWS, REVIEWS_AVAILABLE, type Review } from '../data/reviews'
+import { WARRANTY_URL } from '../data/product'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { useRevealOnScroll } from '../hooks/useRevealOnScroll'
 import { SectionHeading } from './SectionHeading'
@@ -29,12 +25,12 @@ function Stars({ rating }: { rating: Review['rating'] }) {
 }
 
 /**
- * Section 10 — reviews.
+ * Proof.
  *
- * The cards below are placeholders and say so, loudly, while
- * `REVIEWS_ARE_PLACEHOLDER` is true. The `Review` shape mirrors what the
- * common Shopify review apps return, so going live is a data-layer swap:
- * fetch into `REVIEWS`, flip the flag, and this component is unchanged.
+ * With no review source connected, this renders a composed empty state rather
+ * than placeholder cards dressed up as testimonials. It says plainly that
+ * reviews are not published yet and points at the guarantees that are real,
+ * which is the honest way to hold this position in the page.
  */
 export function ReviewsSection() {
   const rootRef = useRef<HTMLElement | null>(null)
@@ -42,59 +38,79 @@ export function ReviewsSection() {
 
   useRevealOnScroll(rootRef, { disabled: reducedMotion, stagger: 0.06 })
 
+  const hasReviews = REVIEWS_AVAILABLE && REVIEWS.length > 0
+
   return (
     <section id="reviews" ref={rootRef} className={styles.section} aria-labelledby="reviews-heading">
       <div className="shell">
         <SectionHeading
           id="reviews-heading"
-          eyebrow="Owners"
-          title="What owners say"
+          eyebrow="Proof"
+          title={hasReviews ? 'What owners say' : 'Buy it on the guarantee, not the reviews'}
           lead={
-            AGGREGATE_RATING
-              ? `${AGGREGATE_RATING.value.toFixed(1)} average from ${AGGREGATE_RATING.count} reviews.`
-              : undefined
+            hasReviews
+              ? AGGREGATE_RATING
+                ? `${AGGREGATE_RATING.value.toFixed(1)} average from ${AGGREGATE_RATING.count} reviews.`
+                : undefined
+              : 'We have not published customer reviews for this system yet. Rather than fill the space with something we cannot stand behind, here is what actually backs the purchase.'
           }
           width="wide"
         />
 
-        {REVIEWS_ARE_PLACEHOLDER ? (
-          <p className={styles.banner} data-reveal>
-            <strong>Placeholder content.</strong> These are not real customer reviews. Connect a
-            review source in <code>src/data/reviews.ts</code> before launch.
-          </p>
-        ) : null}
-
-        <div className={styles.grid}>
-          {REVIEWS.map((review) => (
-            <article
-              key={review.id}
-              data-reveal
-              className={[styles.card, REVIEWS_ARE_PLACEHOLDER ? styles.placeholderCard : '']
-                .filter(Boolean)
-                .join(' ')}
-            >
-              <Stars rating={review.rating} />
-              <h3 className={styles.cardTitle}>{review.title}</h3>
-              <p className={styles.cardBody}>{review.body}</p>
-              <p className={styles.meta}>
-                <span>{review.author}</span>
-                <span aria-hidden="true">·</span>
-                <time dateTime={review.date}>
-                  {new Date(review.date).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                  })}
-                </time>
-                {review.verifiedPurchase ? (
-                  <>
-                    <span aria-hidden="true">·</span>
-                    <span className={styles.verified}>Verified purchase</span>
-                  </>
-                ) : null}
+        {hasReviews ? (
+          <div className={styles.grid}>
+            {REVIEWS.map((review) => (
+              <article key={review.id} data-reveal className={styles.card}>
+                <Stars rating={review.rating} />
+                <h3 className={styles.cardTitle}>{review.title}</h3>
+                <p className={styles.cardBody}>{review.body}</p>
+                <p className={styles.meta}>
+                  <span>{review.author}</span>
+                  <span aria-hidden="true">·</span>
+                  <time dateTime={review.date}>
+                    {new Date(review.date).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'short',
+                    })}
+                  </time>
+                  {review.verifiedPurchase ? (
+                    <>
+                      <span aria-hidden="true">·</span>
+                      <span className={styles.verified}>Verified purchase</span>
+                    </>
+                  ) : null}
+                </p>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className={styles.assurances}>
+            <div className={styles.assurance} data-reveal>
+              <h3 className={styles.assuranceTitle}>A lifetime warranty</h3>
+              <p className={styles.assuranceBody}>
+                Registered after installation, the system is covered for life — a longer commitment
+                than this category usually makes.
               </p>
-            </article>
-          ))}
-        </div>
+              <a className={styles.assuranceLink} href={WARRANTY_URL}>
+                Warranty registration
+              </a>
+            </div>
+            <div className={styles.assurance} data-reveal>
+              <h3 className={styles.assuranceTitle}>A satisfaction guarantee</h3>
+              <p className={styles.assuranceBody}>
+                If the system is not right for your kitchen, it is covered by a 100% satisfaction
+                guarantee.
+              </p>
+            </div>
+            <div className={styles.assurance} data-reveal>
+              <h3 className={styles.assuranceTitle}>Figures you can check</h3>
+              <p className={styles.assuranceBody}>
+                Every specification on this page traces to the manufacturer&rsquo;s sheet. Where a
+                number is still outstanding, the page says so rather than estimating.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   )

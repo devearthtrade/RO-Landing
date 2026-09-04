@@ -146,46 +146,84 @@ Every figure on the page comes from the data layer, never from markup:
 
 | File | Holds |
 | --- | --- |
-| `src/data/product.ts` | Name, price, Shopify identifiers |
+| `src/data/product.ts` | Name, price, Shopify identifiers, policy URLs |
 | `src/data/specs.ts` | All specifications, grouped |
-| `src/data/content.ts` | Section copy, video map, journey steps, minerals |
+| `src/data/content.ts` | Section copy, journey steps, minerals, water chemistry |
 | `src/data/trust.ts` | Warranty, shipping, returns, support |
-| `src/data/reviews.ts` | Reviews (currently placeholders) |
 | `src/data/faq.ts` | FAQ questions and answers |
+| `src/data/reviews.ts` | Reviews (currently empty — see below) |
+| `src/data/videoManifest.ts` | Measured video properties and playback behaviour |
 
-**Unverified values are never invented.** A spec whose value is `TODO_VERIFY`
-renders as "Pending verification" in the UI, and the specifications section
-prints a count of how many are outstanding. Currently pending:
+Facts sit in one of three states, and nothing in between.
 
-- Certifications (NSF/ANSI or equivalent — do not publish a certification
-  claim until confirmed in writing)
-- Dimensions
-- Installation requirements
-- Production rate (GPD)
-- Water efficiency / pure-to-drain ratio
-- Return window, support channels
+**1. Verified** — confirmed against the supplied specification sheet or
+published policy:
 
-Verified and in use: 5-stage reverse osmosis, up to 98% contaminant
-reduction, calcium/magnesium/potassium mineralization, pH 8–9, tankless
-under-counter design, 6–12 month filter life, lifetime warranty, 100%
-satisfaction guarantee, free shipping to the contiguous 48 states.
+- water rebalanced **above 7.5 pH**
+- enriched with **calcium, magnesium and potassium**
+- **ORP −100 to −200 mV**
+- **chlorine reduction** through the carbon stage
+- carbon media certified to **NSF/ANSI 42 and NSF/ANSI 61**
+- **tankless**, under-counter, **10.24 × 20.5 × 23.62 in**
+- **lifetime warranty** with registration, **100% satisfaction guarantee**
+- **free shipping** to the contiguous 48 states
 
-The page makes **no health, medical or therapeutic claims**, and the footer
-says so explicitly. Keep it that way.
+**2. Manufacturer pending** — requested and not yet received. These render as
+a literal `{Required data: ...}` placeholder, so a reviewer can see the gap
+and it can never be mistaken for a real number:
 
-The FAQ follows the same rule in a stricter form: a question whose `answer`
-is `null` is **not rendered at all**. A shopper is never shown "we don't
-know" — the question stays in `src/data/faq.ts` so the gap is tracked, and a
-development-only note on the page lists what is still withheld. Six questions
-are currently held back: production rate (GPD), certification, water
-efficiency, self-installation, dimensions, and the return window.
+| Placeholder | Appears in |
+| --- | --- |
+| `{Required data: RO production capacity / GPD}` | specs, FAQ |
+| `{Required data: RO water efficiency / recovery ratio}` | specs, FAQ |
+| `{Required data: RO installation requirements}` | specs, FAQ |
+| `{Required data: verified contaminant reduction rate}` | specs, FAQ |
+| `{Required data: filter replacement interval}` | specs, FAQ |
+| `{Required data: whole-system certification, if any}` | specs |
+| `{Required data: routine maintenance requirements}` | FAQ |
+| `{Required data: support channels and hours}` | trust |
 
-Reviews in `src/data/reviews.ts` are **placeholders** and are labelled as such
-on the page while `REVIEWS_ARE_PLACEHOLDER` is `true`. The `Review` type
-mirrors what Judge.me / Loox / Okendo return, so going live is a data-layer
-swap — no component changes.
+**3. Removed** — claims that were on the page but are not supported by the
+specification sheet. All came from brand marketing copy:
 
----
+| Was | Now |
+| --- | --- |
+| "5-stage reverse osmosis" | "Multi-stage reverse osmosis" — the count is gone |
+| "Up to 98% contaminant reduction" | `{Required data: verified contaminant reduction rate}` |
+| "including many heavy metals and chemicals" | removed |
+| "6–12 month filter life" | `{Required data: filter replacement interval}` |
+
+### Certification
+
+The **only** certification represented is **NSF/ANSI 42 and NSF/ANSI 61, on
+the carbon media**. The assembled system is not certified as far as we can
+confirm, so the specification table carries *two separate rows* — media
+certification and whole-system certification — and the scope limit is
+restated in the FAQ answer, the trust item and a dedicated footer paragraph.
+
+**NSF/ANSI 58 is never claimed.** Do not add it, and do not reword the media
+certification into a system-level claim, without a certification listing for
+this exact model.
+
+### Return policy
+
+**No return window is printed anywhere.** The page links to the store's own
+policy page (`RETURN_POLICY_URL` in `product.ts`) from the FAQ, the trust
+section and the offer panel. The 30-day figure that circulates online belongs
+to the alkaline water *pitcher* product, not this RO system.
+
+### Reviews
+
+`src/data/reviews.ts` is **empty on purpose**. With no review source
+connected, the section renders a composed empty state — three real guarantees
+— rather than placeholder cards dressed up as testimonials. To go live, feed
+`REVIEWS` from your provider and set `REVIEWS_AVAILABLE` to `true`.
+
+### Health claims
+
+pH, mineral content and ORP are stated only as measurements of the water. The
+page makes **no health, medical or therapeutic claims**, and the footer says
+so. Keep it that way.
 
 ## Page structure
 
@@ -199,7 +237,7 @@ The sections run as one sales narrative, in this order:
 | 4 | RO technology | `FiltrationSection`, `WaterJourney` |
 | 5 | Why this system | `TanklessSection`, `MineralizationSection` |
 | 6 | Product experience | `LifestyleSection` |
-| 7 | Proof | `SpecsSection`, `TrustSection`, `ReviewsSection` |
+| 7 | Proof | `SpecsSection`, `TrustSection`, `ReviewsSection` (empty state) |
 | 8 | Offer | `OfferSection` |
 | 9 | FAQ | `FaqSection` |
 | 10 | Final CTA | `FinalCTA` |
@@ -237,12 +275,17 @@ All eight videos go through one primitive, `CinematicVideo`, backed by
 
 ### Motion
 
-`useVideoScrub` pins section 2 and maps scroll progress onto the video's
-`currentTime`, throttled to one seek per animation frame. It is deliberately
-**desktop-only and gated on the video being ready** — on phones, and when the
-file is absent, the same section degrades to a normal scrollable panel with an
-ambient loop. `useRevealOnScroll` handles the quieter fade-and-rise used
-everywhere else, and is a no-op under reduced motion.
+**Nothing is scroll-scrubbed.** The delivered clips hold a single keyframe
+each, so seeking replays from frame zero — see "Why nothing is
+scroll-scrubbed" above. Section 02 plays one pass and holds the system open;
+its progress rail tracks the reader's travel through the section rather than
+the video playhead.
+
+`useRevealOnScroll` handles the fade-and-rise used across the page and is a
+no-op under reduced motion. Continuity between sections comes from CSS: tonal
+seams dissolve each boundary between the paper ground and the deep field, and
+the six middle films carry chapter numbering so they read as one sequence.
+Both behave identically under reduced motion.
 
 ### Accessibility
 

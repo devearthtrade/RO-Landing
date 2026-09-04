@@ -1,49 +1,53 @@
 /**
- * Product specifications.
+ * Product specifications — the single source of truth for every figure on
+ * the page.
  *
- * RULE: never invent a value. Anything not confirmed is `TODO_VERIFY` and
- * renders as "Pending verification" in the UI rather than as a number a
- * customer could be misled by.
+ * Three states, and nothing in between:
  *
- * PROVENANCE. Two tiers of fact appear here:
+ *  1. VERIFIED. Confirmed against the supplied specification sheet: water
+ *     rebalanced above 7.5 pH, enriched with calcium, magnesium and
+ *     potassium, ORP -100 to -200 mV, carbon media certified to NSF/ANSI 42
+ *     and NSF/ANSI 61, chlorine reduction, tankless, and the unit
+ *     dimensions. Lifetime warranty, the satisfaction guarantee and free
+ *     shipping to the contiguous 48 states come from published policy.
  *
- *  1. Values from the supplied specification sheet — treated as verified:
- *       - water rebalanced to over 7.5 pH
- *       - enriched with calcium, magnesium and potassium
- *       - ORP -100 to -200 mV
- *       - carbon media certified to NSF/ANSI 42 and NSF/ANSI 61
- *       - special features: chlorine reduction, tankless
- *       - dimensions 10.24"L x 20.5"W x 23.62"H
+ *  2. MANUFACTURER PENDING. Requested and not yet received. These render as
+ *     a literal `{Required data: ...}` placeholder so a reviewer can see at
+ *     a glance what is outstanding and it can never be mistaken for a real
+ *     number: production rate (GPD) and water efficiency.
  *
- *  2. Values taken from published brand copy that the specification sheet
- *     does not cover. These carry `needsConfirmation` and are listed in the
- *     development note under the specifications section so they stay visible
- *     until someone signs them off: the 5-stage count, the "up to 98%"
- *     reduction figure, and the 6-12 month filter life.
+ *  3. REMOVED. Claims that were on the page but are not supported by the
+ *     specification sheet. A stage COUNT ("5-stage"), a reduction RATE
+ *     ("up to 98%"), a contaminant list ("heavy metals and chemicals") and a
+ *     filter service interval ("6-12 months") all came from brand marketing
+ *     copy. The numbers are gone. What remains is either descriptive
+ *     (multi-stage, replaceable filters) or an explicit placeholder.
  *
  * CERTIFICATION SCOPE. NSF/ANSI 42 and 61 apply to the CARBON MEDIA, not to
  * the assembled system. The two are separate rows below precisely so the
- * distinction cannot be collapsed by a reader skimming the table, and the
- * system-level row stays pending until certification is confirmed in writing.
+ * distinction cannot be collapsed by a reader skimming the table.
+ * NSF/ANSI 58 is NOT claimed anywhere and must not be added without a
+ * certification listing for this exact model.
  *
- * VERIFICATION ATTEMPT 2026-09-04. GPD, pure-to-drain ratio, whole-system
- * NSF/ANSI 58 certification and installation requirements were researched
- * against the authoritative source order: Pitcher of Life documentation,
- * manufacturer documentation, then the certification body's own database.
- * Every one of those hosts is unreachable from the build environment
- * (pitcheroflife.com, nsf.org, listings.nsf.org, info.nsf.org and wqa.org all
- * return proxy policy denials), so NOTHING below was upgraded. These remain
- * TODO_VERIFY because they are unverified, not because they are unknowable —
- * see the per-field notes for where to look.
- *
- * NO HEALTH CLAIMS. pH, mineral content and ORP are stated as measurements of
- * the water only. Nothing here asserts a physiological, medical or health
- * effect, and nothing should be added that does.
+ * NO HEALTH CLAIMS. pH, mineral content and ORP are stated only as
+ * measurements of the water. Nothing here asserts a physiological, medical
+ * or health effect, and nothing may be added that does.
  */
 
 export const TODO_VERIFY = 'TODO_VERIFY' as const
 
+/**
+ * Text shown in place of a value we have asked the manufacturer for and not
+ * yet received. It is deliberately literal and bracketed so it is impossible
+ * to mistake for a real figure, in the UI or in a screenshot sent for review.
+ */
+export type RequiredData = `{Required data: ${string}}`
+
 export type SpecValue = string | typeof TODO_VERIFY
+
+/** True when a value is an explicit manufacturer-pending placeholder. */
+export const isRequiredData = (value: SpecValue): boolean =>
+  value.startsWith('{Required data:')
 
 export interface Spec {
   id: string
@@ -53,12 +57,6 @@ export interface Spec {
   value: SpecValue
   /** Optional clarifying line shown under the value. */
   note?: string
-  /**
-   * Sourced from brand copy rather than the specification sheet. Renders
-   * normally, but is counted in the development note so it stays on the
-   * list of things to confirm.
-   */
-  needsConfirmation?: boolean
 }
 
 export type SpecGroup = 'filtration' | 'design' | 'water' | 'ownership'
@@ -91,18 +89,24 @@ export const SPECS: Spec[] = [
   {
     id: 'stages',
     group: 'filtration',
-    label: 'Filtration stages',
-    value: '5-stage reverse osmosis',
-    note: 'Sediment and carbon pre-filtration, RO membrane, then mineralization.',
-    needsConfirmation: true,
+    label: 'Filtration',
+    // Was "5-stage reverse osmosis". The stage COUNT appears in brand copy
+    // but not in the supplied specification sheet, so the number is gone and
+    // only the sequence — which is descriptive, not a performance claim —
+    // remains.
+    value: 'Multi-stage reverse osmosis',
+    note: 'Sediment and carbon pre-filtration, then the reverse osmosis membrane, then mineralization.',
   },
   {
     id: 'reduction',
     group: 'filtration',
     label: 'Contaminant reduction',
-    value: 'Up to 98%',
-    note: 'Of common tap-water contaminants, including many heavy metals and chemicals.',
-    needsConfirmation: true,
+    // Was "Up to 98% ... including many heavy metals and chemicals". That
+    // figure and that contaminant list come from brand copy, not from the
+    // specification sheet, so neither is presented as fact. A reduction rate
+    // is a performance claim and needs a test report behind it.
+    value: '{Required data: verified contaminant reduction rate}',
+    note: 'Held back until a reduction figure is confirmed against test data.',
   },
   {
     id: 'chlorine',
@@ -116,6 +120,7 @@ export const SPECS: Spec[] = [
     group: 'filtration',
     label: 'Membrane type',
     value: 'Reverse osmosis membrane',
+    note: 'The core separation stage of the system.',
   },
   {
     id: 'media-certification',
@@ -140,8 +145,8 @@ export const SPECS: Spec[] = [
     // is the reverse osmosis system standard. Confirm 58 for the exact model
     // or leave this pending.
     label: 'Whole-system certification',
-    value: TODO_VERIFY,
-    note: 'Separate from the media certification above, and not yet confirmed.',
+    value: '{Required data: whole-system certification, if any}',
+    note: 'Separate from the media certification above. NSF/ANSI 58 is not claimed and must not be added without a listing for this exact model.',
   },
 
   // ---- Design & installation ---------------------------------------------
@@ -178,7 +183,8 @@ export const SPECS: Spec[] = [
     // whether it covers this RO system specifically rather than the pitcher
     // product line before using anything from it.
     label: 'Installation',
-    value: TODO_VERIFY,
+    value: '{Required data: RO installation requirements}',
+    note: 'Plumbing, drain and power requirements pending confirmation.',
   },
 
   // ---- The water itself ---------------------------------------------------
@@ -214,7 +220,7 @@ export const SPECS: Spec[] = [
     // derive it from dimensions, pump size, filter count, model appearance
     // or any competitor's rating — none of those determine it.
     label: 'Production rate (GPD)',
-    value: TODO_VERIFY,
+    value: '{Required data: RO production capacity / GPD}',
   },
   {
     id: 'efficiency',
@@ -225,8 +231,8 @@ export const SPECS: Spec[] = [
     // the product documentation. Do NOT fill this from a generic reverse
     // osmosis assumption — recovery varies by membrane, pressure and design.
     label: 'Water efficiency',
-    value: TODO_VERIFY,
-    note: 'Pure-to-drain ratio pending confirmation.',
+    value: '{Required data: RO water efficiency / recovery ratio}',
+    note: 'Pure-to-drain ratio requested from the manufacturer.',
   },
 
   // ---- Ownership ----------------------------------------------------------
@@ -234,9 +240,10 @@ export const SPECS: Spec[] = [
     id: 'filter-life',
     group: 'ownership',
     label: 'Filter life',
-    value: '6–12 months',
-    note: 'About 6 months for a household of four; about 12 months for one or two.',
-    needsConfirmation: true,
+    // Was "6-12 months". Published in brand copy but absent from the
+    // specification sheet, and it is the figure an owner budgets against.
+    value: '{Required data: filter replacement interval}',
+    note: 'Replaceable filters. The service interval is pending confirmation.',
   },
   {
     id: 'warranty',
@@ -260,11 +267,12 @@ export const SPECS: Spec[] = [
   },
 ]
 
-/** Claims carried over from brand copy that still need sign-off. */
-export const UNCONFIRMED_SPECS = SPECS.filter((spec) => spec.needsConfirmation)
+/** Specs still waiting on the manufacturer, rendered as placeholders. */
+export const REQUIRED_DATA_SPECS = SPECS.filter((spec) => isRequiredData(spec.value))
 
 export const specsByGroup = (group: SpecGroup): Spec[] =>
   SPECS.filter((spec) => spec.group === group)
 
-/** True when a spec still needs sign-off and must render as pending. */
-export const isPending = (value: SpecValue): boolean => value === TODO_VERIFY
+/** True when a spec still needs sign-off and must render as a placeholder. */
+export const isPending = (value: SpecValue): boolean =>
+  value === TODO_VERIFY || isRequiredData(value)

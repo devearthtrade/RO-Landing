@@ -116,3 +116,41 @@
     align-items: start;
   }
 }
+
+/* A pending answer must never read as a finished one. */
+.answerPending {
+  color: var(--ink-muted);
+}
+
+/* ---- Policy links ---------------------------------------------------------
+   Terms are linked rather than restated, so the page can never drift out of
+   step with the store's actual policy. */
+.policies {
+  margin-top: clamp(2.5rem, 5vh, 3.5rem);
+  padding-top: clamp(1.4rem, 3vh, 2rem);
+  border-top: 1px solid var(--line);
+}
+
+.policiesLead {
+  font-size: var(--step-small);
+  color: var(--ink-muted);
+}
+
+.policyLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.8rem;
+  margin: 0.9rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--step-body);
+}
+
+.policyLinks a {
+  text-decoration-color: var(--ink-faint);
+  transition: text-decoration-color var(--dur) var(--ease-out);
+}
+
+.policyLinks a:hover {
+  text-decoration-color: var(--blue);
+}

@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { SPEC_GROUPS, SPECS, UNCONFIRMED_SPECS, isPending, specsByGroup } from '../data/specs'
+import { SPEC_GROUPS, SPECS, isPending, specsByGroup } from '../data/specs'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { useRevealOnScroll } from '../hooks/useRevealOnScroll'
 import { SectionHeading } from './SectionHeading'
@@ -48,21 +48,6 @@ export function SpecsSection() {
           ))}
         </div>
 
-        {import.meta.env.DEV && UNCONFIRMED_SPECS.length > 0 ? (
-          <p className={styles.disclosure} data-reveal>
-            <svg className={styles.disclosureMark} viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.2" />
-              <path d="M8 4.6v4.2M8 11.2v.6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-            </svg>
-            <span>
-              <strong>Development note.</strong> {UNCONFIRMED_SPECS.length} published value
-              {UNCONFIRMED_SPECS.length === 1 ? '' : 's'} on this page come from brand copy rather
-              than the specification sheet and still need sign-off:{' '}
-              {UNCONFIRMED_SPECS.map((spec) => spec.label).join(' · ')}.
-            </span>
-          </p>
-        ) : null}
-
         {pendingCount > 0 ? (
           <p className={styles.disclosure} data-reveal>
             <svg className={styles.disclosureMark} viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -71,9 +56,9 @@ export function SpecsSection() {
             </svg>
             <span>
               {pendingCount} specification{pendingCount === 1 ? '' : 's'} on this page
-              {pendingCount === 1 ? ' is' : ' are'} marked pending verification. Those figures are
-              held back until they are confirmed against the manufacturer&rsquo;s documentation
-              rather than estimated.
+              {pendingCount === 1 ? ' is' : ' are'} still awaiting manufacturer data and
+              {pendingCount === 1 ? ' is' : ' are'} shown as a labelled placeholder. We would
+              rather leave a gap visible than publish a figure we cannot stand behind.
             </span>
           </p>
         ) : null}

@@ -26,7 +26,7 @@ export const WATER_JOURNEY_STEPS = [
     id: 'ro',
     step: '03',
     title: 'Reverse osmosis',
-    body: 'The membrane removes up to 98% of common tap-water contaminants.',
+    body: 'The reverse osmosis membrane is the core separation stage.',
   },
   {
     id: 'mineral',
@@ -134,12 +134,9 @@ export const KEY_BENEFITS = [
     body: 'A lifetime warranty with product registration, backed by a 100% satisfaction guarantee.',
   },
   {
-    // Sourced from published brand copy rather than the specification sheet;
-    // flagged in specs.ts as needing sign-off, so it follows the verified
-    // items above rather than leading them.
-    id: 'reduction',
-    title: 'Up to 98% contaminant reduction',
-    body: 'Of common tap-water contaminants, including many heavy metals and chemicals.',
+    id: 'measured',
+    title: 'Measured, not asserted',
+    body: 'Every figure on this page traces to the specification sheet. Where a number is still coming from the manufacturer, we show the gap instead of an estimate.',
   },
 ] as const
 

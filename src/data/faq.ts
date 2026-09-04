@@ -1,19 +1,29 @@
 /**
  * Objection handling.
  *
- * RULE: an answer is either traceable to a confirmed product fact or it is
- * `null`. A `null` answer is a question we know shoppers ask and cannot yet
- * answer truthfully — it is held out of the rendered FAQ entirely rather than
- * answered with a guess, and counted in development so the gap stays visible.
+ * Two states only. An answer is either traceable to a confirmed product fact,
+ * or it is an explicit `{Required data: ...}` placeholder naming exactly what
+ * is missing. Nothing is written to sound plausible.
  *
- * Every live answer below traces to `specs.ts` / `trust.ts`.
+ * Every question is rendered, including the pending ones. A visible, labelled
+ * gap is more honest than a short FAQ that quietly omits the questions a
+ * shopper actually has, and it shows a reviewer precisely what to chase.
+ *
+ * Return policy: no window is stated anywhere. The FAQ links to the store's
+ * own policy page instead. The only figure ever found was a 30-day guarantee
+ * on the alkaline water PITCHER pages, which is a different product.
  */
 
 export interface FaqItem {
   id: string
   question: string
-  /** `null` means: not yet verified. Do not write a plausible answer here. */
-  answer: string | null
+  /**
+   * A verified answer, or a `{Required data: ...}` placeholder naming what is
+   * missing. Never a plausible-sounding guess.
+   */
+  answer: string
+  /** True when `answer` is a placeholder rather than a real answer. */
+  pending?: boolean
   /** Groups the question by the objection it defuses. */
   topic: 'water' | 'system' | 'owning'
 }
@@ -24,8 +34,11 @@ export const FAQ: FaqItem[] = [
     id: 'removes',
     topic: 'water',
     question: 'What does the system actually remove?',
+    // A reduction rate and a contaminant list are performance claims. Both
+    // were removed pending test data; the process itself is descriptive.
     answer:
-      'Up to 98% of common tap-water contaminants, including many heavy metals and chemicals. Water passes through sediment and carbon pre-filtration, then a reverse osmosis membrane.',
+      'Water passes through sediment and carbon pre-filtration, then a reverse osmosis membrane, then the mineral stage. The carbon stage is what reduces chlorine. A verified contaminant reduction figure is {Required data: verified contaminant reduction rate}.',
+    pending: true,
   },
   {
     id: 'minerals',
@@ -76,9 +89,9 @@ export const FAQ: FaqItem[] = [
   {
     id: 'stages',
     topic: 'system',
-    question: 'How many filtration stages are there?',
+    question: 'How is the water filtered?',
     answer:
-      'Five, in sequence: sediment and carbon pre-filtration, the reverse osmosis membrane, then the mineral finish.',
+      'In sequence: sediment and carbon pre-filtration, then the reverse osmosis membrane, then the mineral finish that rebalances the water above 7.5 pH.',
   },
 
   // ---- Living with it ------------------------------------------------------
@@ -87,7 +100,8 @@ export const FAQ: FaqItem[] = [
     topic: 'owning',
     question: 'How often do the filters need changing?',
     answer:
-      'About every 6 months for a household of four, and about every 12 months for one or two people.',
+      'The filters are replaceable. {Required data: filter replacement interval} — we are confirming the service interval with the manufacturer rather than publishing an estimate.',
+    pending: true,
   },
   {
     id: 'warranty',
@@ -101,7 +115,7 @@ export const FAQ: FaqItem[] = [
     topic: 'owning',
     question: 'What if it is not right for my home?',
     answer:
-      'It is covered by a 100% satisfaction guarantee, with your money back.',
+      'The system is covered by a 100% satisfaction guarantee. Return terms and the return window are set out in the store return policy, linked below.',
   },
   {
     id: 'shipping',
@@ -111,6 +125,29 @@ export const FAQ: FaqItem[] = [
       'Free to the contiguous 48 states. Alaska and Hawaii ship at a reduced rate.',
   },
 
+  {
+    id: 'operation',
+    topic: 'system',
+    question: 'How does it work day to day?',
+    answer:
+      'You draw water from a dedicated faucet at the sink. Because the system is tankless it filters on demand rather than refilling a reserve, so there is nothing to wait for and no tank taking up the cabinet.',
+  },
+  {
+    id: 'replacements',
+    topic: 'owning',
+    question: 'Where do I get replacement filters?',
+    answer:
+      'Replacement filters for the system are sold by Pitcher of Life — see the link below.',
+  },
+  {
+    id: 'maintenance',
+    topic: 'owning',
+    question: 'Is there any upkeep beyond changing filters?',
+    // Do not invent sanitising, flushing or servicing requirements.
+    answer: '{Required data: routine maintenance requirements}',
+    pending: true,
+  },
+
   // ---- Known questions we still cannot answer -----------------------------
   // These stay in the data so the gap is tracked, and stay OUT of the page so
   // no shopper is told something unverified. Fill the answer in to publish.
@@ -118,9 +155,11 @@ export const FAQ: FaqItem[] = [
     id: 'gpd',
     topic: 'system',
     question: 'How fast does it produce water?',
-    // TODO_VERIFY: rated gallons per day of the membrane. Checked 2026-09-04;
-    // no authoritative source reachable. See specs.ts for the full note.
-    answer: null,
+    // Requested from the manufacturer. Do NOT derive from dimensions, pump
+    // size, filter count or any competitor's rating.
+    answer:
+      'The system is tankless, so it filters on demand rather than drawing from a stored reserve. {Required data: RO production capacity / GPD}',
+    pending: true,
   },
   {
     id: 'certification',
@@ -135,15 +174,19 @@ export const FAQ: FaqItem[] = [
     id: 'efficiency',
     topic: 'system',
     question: 'How much water goes to drain?',
-    // TODO_VERIFY: pure-to-drain ratio.
-    answer: null,
+    // Requested from the manufacturer. Do NOT fill from a generic reverse
+    // osmosis assumption — recovery varies by membrane, pressure and design.
+    answer: '{Required data: RO water efficiency / recovery ratio}',
+    pending: true,
   },
   {
     id: 'install',
     topic: 'system',
     question: 'Can I install it myself?',
-    // TODO_VERIFY: DIY vs. plumber, and whether an outlet is needed under the sink.
-    answer: null,
+    // Do not invent plumbing, drain, electrical or pressure requirements.
+    answer:
+      'The system installs under the counter and feeds a dedicated drinking-water faucet. {Required data: RO installation requirements}',
+    pending: true,
   },
   {
     id: 'dimensions',
@@ -164,7 +207,9 @@ export const FAQ: FaqItem[] = [
     // product from this RO system. Do not carry that number over without
     // confirming it applies to the RO system — the same scope error as
     // reading carbon-media certification as whole-system certification.
-    answer: null,
+    // The page links to the store policy instead of restating a window.
+    answer:
+      'The return window and conditions are set out in the store return policy — see the link below. We do not restate a period here, because the figure that circulates online belongs to a different Pitcher of Life product.',
   },
 ]
 
@@ -174,9 +219,9 @@ export const FAQ_TOPICS: { id: FaqItem['topic']; title: string }[] = [
   { id: 'owning', title: 'Owning it' },
 ]
 
-/** Only questions we can answer truthfully reach the page. */
-export const answeredFaq = (topic: FaqItem['topic']): FaqItem[] =>
-  FAQ.filter((item) => item.topic === topic && item.answer !== null)
+/** Every question in a topic. Pending ones are shown, clearly labelled. */
+export const faqByTopic = (topic: FaqItem['topic']): FaqItem[] =>
+  FAQ.filter((item) => item.topic === topic)
 
-/** Questions shoppers ask that are still blocked on verification. */
-export const UNANSWERED_FAQ = FAQ.filter((item) => item.answer === null)
+/** Questions still carrying a manufacturer placeholder. */
+export const PENDING_FAQ = FAQ.filter((item) => item.pending)

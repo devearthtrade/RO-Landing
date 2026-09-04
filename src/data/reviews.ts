@@ -1,14 +1,16 @@
 /**
- * Section 10 — reviews.
+ * Customer reviews.
  *
- * PLACEHOLDER CONTENT. These are not real customer reviews. They exist to
- * prove out the layout and are flagged as placeholders in the UI whenever
- * `REVIEWS_ARE_PLACEHOLDER` is true.
+ * There are no reviews in this file, and that is deliberate. Inventing a
+ * name, a rating or a sentence of praise would be fabricating a customer,
+ * which is not something this project does — so until a real review source is
+ * connected, the section renders an honest empty state instead of card
+ * skeletons that look like testimonials.
  *
- * To go live: set `REVIEWS_ARE_PLACEHOLDER` to false and replace `REVIEWS`
- * with data from your review provider (Judge.me, Loox, Okendo, Shopify
- * Product Reviews). The `Review` shape below is intentionally close to what
- * those APIs return, so swapping in a fetch is a data-layer change only.
+ * TO GO LIVE: point `fetchReviews` at your provider (Judge.me, Loox, Okendo,
+ * Shopify Product Reviews), set `REVIEWS_AVAILABLE` to true, and the section
+ * switches to the real list. The `Review` shape below is intentionally close
+ * to what those APIs return, so this stays a data-layer change.
  */
 
 export interface Review {
@@ -22,41 +24,14 @@ export interface Review {
   verifiedPurchase: boolean
 }
 
-/** Flip to `false` only when `REVIEWS` holds real, attributable reviews. */
-export const REVIEWS_ARE_PLACEHOLDER: boolean = true
+/** Flip to true once `REVIEWS` is fed by a real review source. */
+export const REVIEWS_AVAILABLE = false
 
-export const REVIEWS: Review[] = [
-  {
-    id: 'placeholder-1',
-    rating: 5,
-    title: 'Placeholder review title',
-    body: 'Placeholder review body. Replace this with real customer copy from your review platform before launch.',
-    author: 'Placeholder Name',
-    date: '2026-01-01',
-    verifiedPurchase: true,
-  },
-  {
-    id: 'placeholder-2',
-    rating: 5,
-    title: 'Placeholder review title',
-    body: 'Placeholder review body. Replace this with real customer copy from your review platform before launch.',
-    author: 'Placeholder Name',
-    date: '2026-01-01',
-    verifiedPurchase: true,
-  },
-  {
-    id: 'placeholder-3',
-    rating: 4,
-    title: 'Placeholder review title',
-    body: 'Placeholder review body. Replace this with real customer copy from your review platform before launch.',
-    author: 'Placeholder Name',
-    date: '2026-01-01',
-    verifiedPurchase: false,
-  },
-]
+/** Real, attributable customer reviews. Empty until a source is connected. */
+export const REVIEWS: Review[] = []
 
 /**
- * TODO_VERIFY: aggregate rating and review count. Leave `null` until the real
- * numbers are wired up — an invented star average is a compliance risk.
+ * Aggregate rating. Stays `null` until it comes from the review provider —
+ * an invented star average is both a trust problem and a compliance one.
  */
 export const AGGREGATE_RATING: { value: number; count: number } | null = null

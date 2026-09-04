@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { KEY_BENEFITS } from '../data/content'
-import { PRICE_DISPLAY, PRODUCT_NAME } from '../data/product'
+import { PRICE_DISPLAY, PRODUCT_NAME, RETURN_POLICY_URL } from '../data/product'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { useRevealOnScroll } from '../hooks/useRevealOnScroll'
 import { AddToCartButton } from './AddToCartButton'
@@ -99,7 +99,16 @@ export function OfferSection() {
               <li className={styles.includedItem}>
                 <span className={styles.dot} aria-hidden="true" />
                 <span>
-                  <strong>Filters last 6–12 months</strong> depending on household size
+                  <strong>Returns</strong> under the{' '}
+                  <a className={styles.includedLink} href={RETURN_POLICY_URL}>
+                    store return policy
+                  </a>
+                </span>
+              </li>
+              <li className={styles.includedItem}>
+                <span className={styles.dot} aria-hidden="true" />
+                <span>
+                  <strong>Replaceable filters</strong>, available from Pitcher of Life
                 </span>
               </li>
             </ul>
