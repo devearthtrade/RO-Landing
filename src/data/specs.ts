@@ -26,6 +26,16 @@
  * distinction cannot be collapsed by a reader skimming the table, and the
  * system-level row stays pending until certification is confirmed in writing.
  *
+ * VERIFICATION ATTEMPT 2026-09-04. GPD, pure-to-drain ratio, whole-system
+ * NSF/ANSI 58 certification and installation requirements were researched
+ * against the authoritative source order: Pitcher of Life documentation,
+ * manufacturer documentation, then the certification body's own database.
+ * Every one of those hosts is unreachable from the build environment
+ * (pitcheroflife.com, nsf.org, listings.nsf.org, info.nsf.org and wqa.org all
+ * return proxy policy denials), so NOTHING below was upgraded. These remain
+ * TODO_VERIFY because they are unverified, not because they are unknowable —
+ * see the per-field notes for where to look.
+ *
  * NO HEALTH CLAIMS. pH, mineral content and ORP are stated as measurements of
  * the water only. Nothing here asserts a physiological, medical or health
  * effect, and nothing should be added that does.
@@ -120,6 +130,15 @@ export const SPECS: Spec[] = [
     // TODO_VERIFY: whole-system certification (e.g. NSF/ANSI 58) and the
     // certifying body. Kept as its own row so the media certification above
     // is never read as covering the complete system.
+    //
+    // Checked 2026-09-04: could not reach the NSF certified-products database
+    // (nsf.org / listings.nsf.org / info.nsf.org) or WQA from this
+    // environment. To confirm, search NSF's certified products listing for
+    // the company and the exact model, and record the listing number here.
+    // NSF/ANSI 42 and 61 on the carbon media is NOT evidence of 58 on the
+    // system; 42 covers aesthetic effects, 61 covers material safety, and 58
+    // is the reverse osmosis system standard. Confirm 58 for the exact model
+    // or leave this pending.
     label: 'Whole-system certification',
     value: TODO_VERIFY,
     note: 'Separate from the media certification above, and not yet confirmed.',
@@ -152,6 +171,12 @@ export const SPECS: Spec[] = [
     group: 'design',
     // TODO_VERIFY: DIY vs. plumber, and whether an outlet is required under
     // the sink for the booster pump.
+    //
+    // Checked 2026-09-04: pitcheroflife.com is unreachable from this
+    // environment. A likely authoritative page exists at
+    // https://pitcheroflife.com/pages/filter-installation-guide — confirm
+    // whether it covers this RO system specifically rather than the pitcher
+    // product line before using anything from it.
     label: 'Installation',
     value: TODO_VERIFY,
   },
@@ -183,6 +208,11 @@ export const SPECS: Spec[] = [
     id: 'gpd',
     group: 'water',
     // TODO_VERIFY: rated gallons per day of the membrane.
+    //
+    // Checked 2026-09-04: no authoritative figure reachable. Must come from
+    // the product spec sheet, manual or the membrane manufacturer. Do NOT
+    // derive it from dimensions, pump size, filter count, model appearance
+    // or any competitor's rating — none of those determine it.
     label: 'Production rate (GPD)',
     value: TODO_VERIFY,
   },
@@ -190,6 +220,10 @@ export const SPECS: Spec[] = [
     id: 'efficiency',
     group: 'water',
     // TODO_VERIFY: pure-to-drain ratio.
+    //
+    // Checked 2026-09-04: no authoritative figure reachable. Must come from
+    // the product documentation. Do NOT fill this from a generic reverse
+    // osmosis assumption — recovery varies by membrane, pressure and design.
     label: 'Water efficiency',
     value: TODO_VERIFY,
     note: 'Pure-to-drain ratio pending confirmation.',

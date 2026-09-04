@@ -118,7 +118,8 @@ export const FAQ: FaqItem[] = [
     id: 'gpd',
     topic: 'system',
     question: 'How fast does it produce water?',
-    // TODO_VERIFY: rated gallons per day of the membrane.
+    // TODO_VERIFY: rated gallons per day of the membrane. Checked 2026-09-04;
+    // no authoritative source reachable. See specs.ts for the full note.
     answer: null,
   },
   {
@@ -156,6 +157,13 @@ export const FAQ: FaqItem[] = [
     topic: 'owning',
     question: 'How long do I have to return it?',
     // TODO_VERIFY: return window in days, who pays return freight.
+    //
+    // Checked 2026-09-04: pitcheroflife.com is unreachable from this
+    // environment. CAUTION: a "30-day money-back guarantee" is associated
+    // with the alkaline water PITCHER product pages, which is a different
+    // product from this RO system. Do not carry that number over without
+    // confirming it applies to the RO system — the same scope error as
+    // reading carbon-media certification as whole-system certification.
     answer: null,
   },
 ]
