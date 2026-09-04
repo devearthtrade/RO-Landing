@@ -129,12 +129,14 @@ export function useLazyVideo({
     if (video.readyState >= 2) setState('ready')
 
     video.addEventListener('loadeddata', onReady)
+    video.addEventListener('canplay', onReady)
     video.addEventListener('error', onError)
     video.addEventListener('play', onPlay)
     video.addEventListener('pause', onPause)
     video.addEventListener('ended', onEnded)
     return () => {
       video.removeEventListener('loadeddata', onReady)
+      video.removeEventListener('canplay', onReady)
       video.removeEventListener('error', onError)
       video.removeEventListener('play', onPlay)
       video.removeEventListener('pause', onPause)

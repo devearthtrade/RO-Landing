@@ -8,6 +8,11 @@
 }
 
 .video {
+  /* Absolutely positioned, and after the placeholder in the DOM, so it paints
+     ON TOP of it. Left static, the placeholder — which is positioned and
+     opaque — painted over the video and the footage was never visible. */
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -22,6 +27,13 @@
 
 .videoReady {
   opacity: 1;
+}
+
+/* Placeholder fades out once the footage is up, so no opaque ground shows
+   through a letterboxed frame. */
+.frame:has(.videoReady) .placeholder {
+  opacity: 0;
+  transition: opacity var(--dur-slow) var(--ease-out);
 }
 
 @media (min-width: 900px) {
