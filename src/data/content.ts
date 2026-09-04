@@ -3,31 +3,10 @@
  * sequence can be re-ordered or re-written without touching layout code.
  */
 
-export interface VideoAsset {
-  /** Path under /public/videos. May not exist yet — the player handles that. */
-  src: string
-  /** Path under /public/posters. Optional; drawn before the video decodes. */
-  poster?: string
-  /** Short description of the shot, used for the accessible label. */
-  description: string
-}
-
-const video = (n: string, description: string): VideoAsset => ({
-  src: `/videos/${n}.mp4`,
-  poster: `/posters/${n}.jpg`,
-  description,
-})
-
-export const VIDEOS = {
-  hero: video('01-hero', 'The Pitcher of Life reverse osmosis system in a modern kitchen'),
-  systemOpen: video('02-system-open', 'The system opening to reveal its internal filter stack'),
-  filtration: video('03-filtration', 'Close detail of the filtration stages'),
-  waterFlow: video('04-water-flow', 'Water travelling through the system to the faucet'),
-  tankless: video('05-tankless', 'The tankless unit compared with a tank-based system'),
-  mineralization: video('06-mineralization', 'Minerals being reintroduced to purified water'),
-  lifestyle: video('07-lifestyle', 'The system in everyday use at home'),
-  final: video('08-final', 'The finished system and drinking-water faucet'),
-} as const
+/**
+ * Video metadata now lives in `videoManifest.ts`, measured from the files
+ * themselves. This file carries narrative copy only.
+ */
 
 /** Section 4 — the path water takes, kept deliberately simple. */
 export const WATER_JOURNEY_STEPS = [

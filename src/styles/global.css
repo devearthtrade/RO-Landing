@@ -189,3 +189,45 @@ section[id] {
     scroll-behavior: auto !important;
   }
 }
+
+/* ---- Story seams ----------------------------------------------------------
+   The eight clips have to read as one continuous product story, not eight
+   cuts. Sections alternate between the warm paper ground and the deep field,
+   and a hard edge between them announces the join. These seams fade one
+   ground into the next across a short band at the boundary, so the eye reads
+   a dissolve instead of a cut.
+
+   Purely decorative, pointer-transparent, and independent of scroll position
+   — so they behave identically under reduced motion. */
+[data-theme='deep'],
+.deep-ground {
+  position: relative;
+}
+
+[data-seam='into-deep']::before,
+[data-seam='both']::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: clamp(3rem, 7vh, 6rem);
+  background: linear-gradient(to bottom, var(--paper-sunk), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+[data-seam='out-of-deep']::after,
+[data-seam='both']::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: clamp(3rem, 7vh, 6rem);
+  background: linear-gradient(to top, var(--paper-sunk), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Content must sit above the seam, never under it. */
+[data-seam] > * {
+  position: relative;
+  z-index: 2;
+}

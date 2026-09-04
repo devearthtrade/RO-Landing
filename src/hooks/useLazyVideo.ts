@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type RefObject } from 'react'
 import { useReducedMotion } from './useReducedMotion'
+import type { Playback } from '../data/videoManifest'
 
 export type VideoState =
   /** Not close enough to the viewport to be worth a network request. */
@@ -13,53 +14,48 @@ export type VideoState =
 
 interface Options {
   /**
-   * How far outside the viewport the video starts loading. Generous enough
-   * that playback has begun by the time the section is read, tight enough
-   * that we never have all eight files in flight at once.
+   * How far outside the viewport the clip starts loading. Wide enough that
+   * playback has begun by the time the section is read, tight enough that
+   * the eight files are never in flight together.
    */
   loadMargin?: string
-  /** Load and play immediately — used only by the hero. */
+  /** Load and play immediately — the hero only. */
   eager?: boolean
-  /** Keep the video paused; the caller drives `currentTime` itself. */
-  scrub?: boolean
-  loop?: boolean
-  /**
-   * Lets a parent share the same element — the pinned reveal needs to seek
-   * the video that this hook is managing.
-   */
+  /** `loop` runs continuously; `once` plays a single pass and holds. */
+  playback?: Playback
   externalVideoRef?: RefObject<HTMLVideoElement | null>
 }
 
 interface LazyVideo {
   videoRef: RefObject<HTMLVideoElement | null>
-  /** Wrapper element that is observed. */
   wrapperRef: RefObject<HTMLDivElement | null>
   state: VideoState
-  /** Only true once we have decided to fetch; drives the `src` attribute. */
   armed: boolean
   /** Reduced motion is on, so playback is user-initiated. */
   manualPlayback: boolean
   isPlaying: boolean
+  /** A `once` clip has finished and is holding its last frame. */
+  hasCompleted: boolean
   togglePlayback: () => void
 }
 
 /**
- * Loading and playback policy for every video on the page.
+ * Loading and playback policy for every clip on the page.
  *
- * The rules this enforces:
- *   - no `src` is attached until the section is near the viewport, so the page
- *     never pulls eight files at load;
- *   - playback is paused whenever the section leaves the viewport, so an
- *     off-screen video never burns battery or decoder memory;
- *   - a missing file resolves to `unavailable` and the section still renders;
- *   - `prefers-reduced-motion` suppresses autoplay entirely and exposes a
- *     play control instead.
+ *  - no `src` is attached until the section is near the viewport, so the page
+ *    never pulls all eight files;
+ *  - `once` clips play a single pass on entry and hold their final frame,
+ *    replaying only if the reader leaves and comes back;
+ *  - playback pauses when the section leaves the viewport and when the tab is
+ *    hidden, so an off-screen clip never burns battery or decoder memory;
+ *  - a missing file resolves to `unavailable` and the section still renders;
+ *  - `prefers-reduced-motion` suppresses autoplay entirely and exposes a
+ *    play control instead.
  */
 export function useLazyVideo({
-  loadMargin = '60% 0px',
+  loadMargin = '50% 0px',
   eager = false,
-  scrub = false,
-  loop = true,
+  playback = 'loop',
   externalVideoRef,
 }: Options): LazyVideo {
   const wrapperRef = useRef<HTMLDivElement | null>(null)
@@ -71,9 +67,9 @@ export function useLazyVideo({
   const [visible, setVisible] = useState(eager)
   const [state, setState] = useState<VideoState>(eager ? 'loading' : 'idle')
   const [isPlaying, setIsPlaying] = useState(false)
+  const [hasCompleted, setHasCompleted] = useState(false)
 
-  // Reduced motion means the user asks for playback explicitly.
-  const manualPlayback = reducedMotion && !scrub
+  const manualPlayback = reducedMotion
   const [userRequestedPlay, setUserRequestedPlay] = useState(false)
 
   // --- Decide when to fetch, and when the section is on screen -------------
@@ -98,7 +94,7 @@ export function useLazyVideo({
 
     const playObserver = new IntersectionObserver(
       ([entry]) => setVisible(Boolean(entry?.isIntersecting)),
-      { threshold: 0.15 },
+      { threshold: 0.2 },
     )
 
     loadObserver.observe(element)
@@ -113,6 +109,12 @@ export function useLazyVideo({
     if (armed) setState((current) => (current === 'idle' ? 'loading' : current))
   }, [armed])
 
+  // A `once` clip that the reader has scrolled away from is rearmed, so it
+  // plays again if they come back rather than sitting on a stale last frame.
+  useEffect(() => {
+    if (!visible) setHasCompleted(false)
+  }, [visible])
+
   // --- Track readiness ------------------------------------------------------
   useEffect(() => {
     const video = videoRef.current
@@ -122,38 +124,41 @@ export function useLazyVideo({
     const onError = () => setState('unavailable')
     const onPlay = () => setIsPlaying(true)
     const onPause = () => setIsPlaying(false)
+    const onEnded = () => setHasCompleted(true)
 
-    // The element may already have data by the time the listener attaches.
     if (video.readyState >= 2) setState('ready')
 
     video.addEventListener('loadeddata', onReady)
     video.addEventListener('error', onError)
     video.addEventListener('play', onPlay)
     video.addEventListener('pause', onPause)
+    video.addEventListener('ended', onEnded)
     return () => {
       video.removeEventListener('loadeddata', onReady)
       video.removeEventListener('error', onError)
       video.removeEventListener('play', onPlay)
       video.removeEventListener('pause', onPause)
+      video.removeEventListener('ended', onEnded)
     }
-  }, [armed])
+  }, [armed, videoRef])
 
   // --- Play / pause against viewport visibility -----------------------------
   useEffect(() => {
     const video = videoRef.current
     if (!video || state !== 'ready') return
-    // Scrubbed videos are positioned by ScrollTrigger, never played.
-    if (scrub) return
 
-    const wantsPlayback = visible && (manualPlayback ? userRequestedPlay : true)
+    const wantsPlayback =
+      visible && !hasCompleted && (manualPlayback ? userRequestedPlay : true)
 
     if (wantsPlayback) {
-      // Autoplay can still be refused (low power mode); failure is not fatal.
+      // A finished `once` clip stays on its last frame until the reader
+      // leaves and returns, which clears `hasCompleted`.
+      if (playback === 'once' && video.ended) return
       void video.play().catch(() => setIsPlaying(false))
     } else if (!video.paused) {
       video.pause()
     }
-  }, [visible, state, scrub, manualPlayback, userRequestedPlay])
+  }, [visible, state, manualPlayback, userRequestedPlay, hasCompleted, playback, videoRef])
 
   // Free the decoder when the tab is hidden.
   useEffect(() => {
@@ -164,25 +169,27 @@ export function useLazyVideo({
     }
     document.addEventListener('visibilitychange', onVisibilityChange)
     return () => document.removeEventListener('visibilitychange', onVisibilityChange)
-  }, [])
+  }, [videoRef])
 
   // Keep the loop flag in sync without re-rendering the element.
   useEffect(() => {
     const video = videoRef.current
-    if (video) video.loop = loop && !scrub
-  }, [loop, scrub, armed])
+    if (video) video.loop = playback === 'loop'
+  }, [playback, armed, videoRef])
 
   const togglePlayback = useCallback(() => {
     const video = videoRef.current
     if (!video) return
     if (video.paused) {
       setUserRequestedPlay(true)
+      setHasCompleted(false)
+      if (video.ended) video.currentTime = 0
       void video.play().catch(() => setIsPlaying(false))
     } else {
       setUserRequestedPlay(false)
       video.pause()
     }
-  }, [])
+  }, [videoRef])
 
   return {
     videoRef,
@@ -191,6 +198,7 @@ export function useLazyVideo({
     armed,
     manualPlayback,
     isPlaying,
+    hasCompleted,
     togglePlayback,
   }
 }

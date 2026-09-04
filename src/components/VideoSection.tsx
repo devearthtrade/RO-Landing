@@ -1,20 +1,19 @@
 import type { ReactNode } from 'react'
 import { useRef } from 'react'
-import type { VideoAsset } from '../data/content'
+import type { VideoManifestEntry } from '../data/videoManifest'
 import { useReducedMotion } from '../hooks/useReducedMotion'
-import { useRevealOnScroll } from '../hooks/useVideoScrub'
+import { useRevealOnScroll } from '../hooks/useRevealOnScroll'
 import { CinematicVideo, type Scrim } from './CinematicVideo'
 import styles from './VideoSection.module.css'
 
 interface Props {
   id: string
-  asset: VideoAsset
+  video: VideoManifestEntry
   children: ReactNode
   /** Optional block placed under the copy — a list, a table, a comparison. */
   extras?: ReactNode
   mediaSide?: 'left' | 'right'
   tone?: 'paper' | 'sunk' | 'deep'
-  focalPoint?: string
   scrim?: Scrim
   labelledBy: string
 }
@@ -28,12 +27,11 @@ interface Props {
  */
 export function VideoSection({
   id,
-  asset,
+  video,
   children,
   extras,
   mediaSide = 'right',
   tone = 'paper',
-  focalPoint,
   scrim = 'none',
   labelledBy,
 }: Props) {
@@ -68,7 +66,7 @@ export function VideoSection({
           </div>
 
           <div className={styles.media} data-reveal>
-            <CinematicVideo asset={asset} focalPoint={focalPoint} scrim={scrim} />
+            <CinematicVideo video={video} scrim={scrim} />
           </div>
         </div>
       </div>

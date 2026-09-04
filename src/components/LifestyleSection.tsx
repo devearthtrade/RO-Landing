@@ -1,4 +1,4 @@
-import { VIDEOS } from '../data/content'
+import { VIDEO_MANIFEST } from '../data/videoManifest'
 import { SectionHeading } from './SectionHeading'
 import { VideoSection } from './VideoSection'
 
@@ -12,15 +12,14 @@ export function LifestyleSection() {
   return (
     <VideoSection
       id="home"
-      asset={VIDEOS.lifestyle}
+      video={VIDEO_MANIFEST.lifestyle}
       labelledBy="lifestyle-heading"
       mediaSide="right"
       tone="sunk"
-      focalPoint="55% 50%"
     >
       <SectionHeading
         id="lifestyle-heading"
-        eyebrow="At home"
+        eyebrow="07 — At home"
         title="Better water belongs in your home."
         lead="Installed out of sight, drawn from a faucet of its own. The system does its work under the counter and leaves the kitchen to you."
       />

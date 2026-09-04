@@ -1,81 +1,71 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { gsap, ScrollTrigger } from '../lib/gsap'
-import { VIDEOS } from '../data/content'
+import { VIDEO_MANIFEST } from '../data/videoManifest'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { useIsDesktop } from '../hooks/useMediaQuery'
-import { useVideoScrub, useRevealOnScroll } from '../hooks/useVideoScrub'
+import { useRevealOnScroll } from '../hooks/useRevealOnScroll'
 import { CinematicVideo } from './CinematicVideo'
 import type { VideoState } from '../hooks/useLazyVideo'
 import styles from './SystemReveal.module.css'
 
 /**
- * Section 2 — "What's happening inside?".
+ * Section 3 — "What's happening inside?".
  *
- * The section pins and the reader's scroll drives the video's playhead, so
- * the system appears to open under their own hand. Where scrubbing is a bad
- * idea — reduced motion, or a phone where seeking a large file stutters — the
- * same footage plays as an ambient loop in a normal, unpinned section. The
- * story survives either way.
+ * This section was built to scrub the clip against scroll position. The
+ * delivered file makes that impossible: it holds a single keyframe, so every
+ * seek replays from frame zero and the reveal stutters. Instead the clip
+ * plays a single pass when the section arrives and holds the system open,
+ * which reads the same to a customer and costs nothing in smoothness.
+ *
+ * The progress rail now tracks the reader's travel through the section
+ * rather than the video's playhead, so it still ties the section together.
  */
 export function SystemReveal() {
   const introRef = useRef<HTMLElement | null>(null)
   const stageRef = useRef<HTMLElement | null>(null)
-  const videoRef = useRef<HTMLVideoElement | null>(null)
   const fillRef = useRef<HTMLSpanElement | null>(null)
 
   const reducedMotion = useReducedMotion()
   const isDesktop = useIsDesktop()
   const [videoState, setVideoState] = useState<VideoState>('idle')
-  const [seekTooSlow, setSeekTooSlow] = useState(false)
-
-  // Scrubbing seeks a video file on every frame. That is fine on a desktop
-  // with the file buffered and wrong on a phone, so pinning is desktop-only.
-  // It also depends on the encode: a clip with sparse keyframes has to replay
-  // from the previous keyframe on every seek, so the hook measures real seek
-  // cost and tells us to stand down when scrubbing would stutter.
-  const scrubIntent = isDesktop && !reducedMotion && !seekTooSlow
-
-  // The <video> is not mounted until the section nears the viewport, and a
-  // missing file never becomes ready at all. Pin only once there is something
-  // to scrub — otherwise the section stays a normal, scrollable panel.
-  const pinned = scrubIntent && videoState === 'ready'
 
   const handleVideoState = useCallback((next: VideoState) => setVideoState(next), [])
-  const handleSlowSeek = useCallback(() => setSeekTooSlow(true), [])
 
   useRevealOnScroll(introRef, { disabled: reducedMotion })
 
-  useVideoScrub({
-    videoRef,
-    triggerRef: stageRef,
-    distance: 2.4,
-    disabled: !pinned,
-    onSlowSeek: handleSlowSeek,
-  })
-
-  // Progress bar, driven by the same scroll range as the scrub.
   useEffect(() => {
     const stage = stageRef.current
     const fill = fillRef.current
     if (!stage || !fill) return
 
+    if (reducedMotion) {
+      gsap.set(fill, { scaleX: 1 })
+      return
+    }
+
     const trigger = ScrollTrigger.create({
       trigger: stage,
-      start: pinned ? 'top top' : 'top 80%',
-      end: pinned ? () => `+=${window.innerHeight * 2.4}` : 'bottom 40%',
+      start: 'top 85%',
+      end: 'bottom 45%',
+      scrub: 0.5,
       onUpdate: (self: ScrollTrigger) => gsap.set(fill, { scaleX: self.progress }),
     })
 
     return () => trigger.kill()
-  }, [pinned])
+  }, [reducedMotion])
 
   return (
     <>
-      <section className={styles.intro} ref={introRef} aria-labelledby="system-intro-heading">
+      <section
+        className={styles.intro}
+        ref={introRef}
+        data-seam="into-deep"
+        aria-labelledby="system-intro-heading"
+      >
         <div className="shell">
           <div className={styles.introInner}>
             <span className="eyebrow" data-reveal>
-              The system
+              02 — The system
             </span>
             <p className={styles.introStatement} id="system-intro-heading" data-reveal>
               Five filtration stages, a reverse osmosis membrane and a mineral finish —
@@ -89,16 +79,14 @@ export function SystemReveal() {
         id="inside"
         className={styles.stage}
         ref={stageRef}
+        data-video-state={videoState}
         aria-labelledby="inside-heading"
       >
         <div className={styles.media}>
           <CinematicVideo
-            asset={VIDEOS.systemOpen}
-            scrub={scrubIntent}
-            videoRef={videoRef}
+            video={VIDEO_MANIFEST.systemOpen}
             onStateChange={handleVideoState}
             scrim={isDesktop ? 'left' : 'bottom'}
-            focalPoint={isDesktop ? '50% 50%' : '55% 42%'}
           />
         </div>
 

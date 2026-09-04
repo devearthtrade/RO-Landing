@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { gsap, ScrollTrigger } from '../lib/gsap'
-import { VIDEOS, WATER_JOURNEY_STEPS } from '../data/content'
+import { WATER_JOURNEY_STEPS } from '../data/content'
+import { VIDEO_MANIFEST } from '../data/videoManifest'
 import { useReducedMotion } from '../hooks/useReducedMotion'
-import { useRevealOnScroll } from '../hooks/useVideoScrub'
+import { useRevealOnScroll } from '../hooks/useRevealOnScroll'
 import { CinematicVideo } from './CinematicVideo'
 import { SectionHeading } from './SectionHeading'
 import styles from './WaterJourney.module.css'
@@ -48,13 +49,14 @@ export function WaterJourney() {
       ref={rootRef}
       className={styles.section}
       data-theme="deep"
+      data-seam="out-of-deep"
       aria-labelledby="journey-heading"
     >
       <div className="shell">
         <div className={styles.header}>
           <SectionHeading
             id="journey-heading"
-            eyebrow="The path"
+            eyebrow="04 — The path"
             title="Follow the water"
             lead="See the journey from your home's water supply through the filtration system to your drinking-water faucet."
             width="wide"
@@ -78,7 +80,7 @@ export function WaterJourney() {
           </div>
 
           <div className={styles.media} data-reveal>
-            <CinematicVideo asset={VIDEOS.waterFlow} focalPoint="50% 50%" scrim="soft" />
+            <CinematicVideo video={VIDEO_MANIFEST.waterFlow} scrim="soft" />
           </div>
         </div>
       </div>

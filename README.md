@@ -27,35 +27,63 @@ npm run preview    # serve the production build locally
 
 ---
 
-## 1. Where the videos go
+## 1. The videos
 
-Put the eight `.mp4` files in **`public/videos/`** using these exact names:
+All eight files are present in `public/videos/` and integrated.
+`src/data/videoManifest.ts` is the single source of truth for each clip's
+measured properties and its playback behaviour, and is the only place to
+change how a video behaves.
 
-| File | Section |
-| --- | --- |
-| `01-hero.mp4` | Hero |
-| `02-system-open.mp4` | What's happening inside? |
-| `03-filtration.mp4` | Engineered filtration |
-| `04-water-flow.mp4` | Follow the water |
-| `05-tankless.mp4` | More technology. Less space. |
-| `06-mineralization.mp4` | Purified. Then remineralized. |
-| `07-lifestyle.mp4` | Better water belongs in your home. |
-| `08-final.mp4` | Your water. Upgraded. |
+Measured from the file headers:
 
-The eight files are committed to this repo (~14 MB total).
-`public/videos/README.md` has the encoding recipe and the measured state of
-the current files. Two things matter most:
+| File | Duration | Resolution | Aspect | Size | Frames | Keyframes | Playback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `01-hero.mp4` | 8.00s | 1280×720 | 16:9 | 2.31 MB | 192 | 1 | loop (eager) |
+| `02-system-open.mp4` | 5.17s | 1344×768 | 7:4 | 1.37 MB | 124 | 1 | once + hold |
+| `03-filtration.mp4` | 5.17s | 1344×768 | 7:4 | 1.58 MB | 124 | 1 | once + hold |
+| `04-water-flow.mp4` | 5.17s | 1344×768 | 7:4 | 1.94 MB | 124 | 1 | loop |
+| `05-tankless.mp4` | 5.17s | 1344×768 | 7:4 | 1.54 MB | 124 | 1 | once + hold |
+| `06-mineralization.mp4` | 5.17s | 1344×768 | 7:4 | 1.89 MB | 124 | 1 | once + hold |
+| `07-lifestyle.mp4` | 5.17s | 1344×768 | 7:4 | 1.60 MB | 124 | 1 | loop |
+| `08-final.mp4` | 5.17s | 1344×768 | 7:4 | 1.48 MB | 124 | 1 | once + hold |
 
-- Encode with `-movflags +faststart` so playback can begin before the whole
-  file arrives. Without it, `preload="metadata"` has to fetch the entire
-  video just to read its duration, which defeats the lazy-loading below.
-- `02-system-open.mp4` is **scrubbed by scroll position**, which means the
-  browser seeks it constantly. Give it dense keyframes (`-g 5`), or the
-  scrub will stutter. The current export has a single keyframe; the page
-  detects slow seeking and falls back to playback, but the scroll-driven
-  reveal needs a re-export to work as designed.
+All are H.264 at 24 fps with faststart applied.
 
-## 2. Where the poster images go
+### Why nothing is scroll-scrubbed
+
+Every file holds exactly **one keyframe**. Seeking to any point forces the
+decoder to replay from frame zero, so scrubbing a clip against scroll
+position stutters — badly on phones. No section scrubs as a result,
+including sections 02 and 03 where it was originally planned.
+
+To enable scrubbing, re-export with frequent keyframes and flip
+`scrubEligible` in the manifest:
+
+```sh
+ffmpeg -i source.mov -an -c:v libx264 -crf 22 -g 5 \
+  -pix_fmt yuv420p -movflags +faststart 02-system-open.mp4
+```
+
+The scrub implementation was removed rather than left as dead code; it is
+recoverable from git history (`src/hooks/useVideoScrub.ts`, removed in the
+video-integration commit).
+
+### Two things worth fixing at the source
+
+1. **Keyframes** — as above, for section 02.
+2. **Audio** — all eight carry an `mp4a` track and all play muted. `-an`
+   removes bytes nobody will ever hear.
+
+### Mobile framing
+
+Sources are 1.75:1 landscape; a phone viewport is roughly 0.46:1. A tall
+portrait crop would discard more than half of every frame, so contained
+sections use a 3:2 box on phones (widening to 4:5 and then 3:4 on larger
+screens). Only the hero and the closing section crop to full bleed, where
+per-breakpoint focal points in the manifest pull the crop toward the product.
+Nothing is ever stretched — `object-fit: cover` throughout.
+
+## 2. Poster images — still outstanding
 
 Put one still per video in **`public/posters/`**, same name with `.jpg`:
 
@@ -63,9 +91,15 @@ Put one still per video in **`public/posters/`**, same name with `.jpg`:
 01-hero.jpg  02-system-open.jpg  …  08-final.jpg
 ```
 
-The poster is what shows before the video decodes and on slow connections.
+**None of the eight posters exist yet**, and they could not be generated in
+the build environment — it has no H.264 decoder. Until they are added, each
+section falls back to its composed placeholder, which is a designed state
+rather than a broken one, so nothing is visibly wrong. Generate them locally
+with the command above and set the `poster` field for each entry in
+`src/data/videoManifest.ts` (all eight are currently `null`).
+
 `01-hero.jpg` is preloaded from `index.html` (it is the largest contentful
-paint) — keep it under about 150 KB. Missing posters are not an error.
+paint) — keep it under about 150 KB.
 
 ## 3. Where the Shopify variant ID goes
 

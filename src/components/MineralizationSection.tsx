@@ -1,4 +1,5 @@
-import { VIDEOS, MINERALS, WATER_CHEMISTRY } from '../data/content'
+import { MINERALS, WATER_CHEMISTRY } from '../data/content'
+import { VIDEO_MANIFEST } from '../data/videoManifest'
 import { SectionHeading } from './SectionHeading'
 import { VideoSection } from './VideoSection'
 import styles from './MineralizationSection.module.css'
@@ -13,11 +14,10 @@ export function MineralizationSection() {
   return (
     <VideoSection
       id="mineralization"
-      asset={VIDEOS.mineralization}
+      video={VIDEO_MANIFEST.mineralization}
       labelledBy="mineralization-heading"
       mediaSide="left"
       tone="paper"
-      focalPoint="50% 50%"
       extras={
         <>
           <dl className={styles.chemistry}>
@@ -45,7 +45,7 @@ export function MineralizationSection() {
     >
       <SectionHeading
         id="mineralization-heading"
-        eyebrow="Mineralization"
+        eyebrow="06 — Mineralization"
         title="Purified. Then remineralized."
         lead="Reverse osmosis strips water down to almost nothing — including the minerals that give it taste. The final stage puts calcium, magnesium and potassium back, rebalancing the water above 7.5 pH."
       />

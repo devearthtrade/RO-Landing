@@ -1,7 +1,8 @@
 import { useRef } from 'react'
-import { VIDEOS, TANKLESS_COMPARISON } from '../data/content'
+import { TANKLESS_COMPARISON } from '../data/content'
+import { VIDEO_MANIFEST } from '../data/videoManifest'
 import { useReducedMotion } from '../hooks/useReducedMotion'
-import { useRevealOnScroll } from '../hooks/useVideoScrub'
+import { useRevealOnScroll } from '../hooks/useRevealOnScroll'
 import { CinematicVideo } from './CinematicVideo'
 import { SectionHeading } from './SectionHeading'
 import styles from './TanklessSection.module.css'
@@ -41,7 +42,7 @@ export function TanklessSection() {
       <div className="shell">
         <SectionHeading
           id="tankless-heading"
-          eyebrow="Tankless"
+          eyebrow="05 — Tankless"
           title="More technology. Less space."
           lead="Conventional reverse osmosis stores treated water in a pressurized tank. This system filters on demand, so the tank — and the cabinet space it needs — is simply not part of the install."
           width="wide"
@@ -49,7 +50,7 @@ export function TanklessSection() {
 
         <div className={styles.layout}>
           <div className={styles.media} data-reveal>
-            <CinematicVideo asset={VIDEOS.tankless} focalPoint="50% 50%" scrim="soft" />
+            <CinematicVideo video={VIDEO_MANIFEST.tankless} scrim="soft" />
           </div>
 
           <div className={styles.compare}>

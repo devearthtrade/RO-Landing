@@ -1,31 +1,16 @@
 import { useEffect, type CSSProperties, type RefObject } from 'react'
 import { useLazyVideo, type VideoState } from '../hooks/useLazyVideo'
-import type { VideoAsset } from '../data/content'
+import type { VideoManifestEntry } from '../data/videoManifest'
 import styles from './CinematicVideo.module.css'
 
 export type Scrim = 'bottom' | 'left' | 'soft' | 'none'
 
 interface Props {
-  asset: VideoAsset
-  /** Hero only: skip the IntersectionObserver and load straight away. */
-  eager?: boolean
-  /** The caller drives `currentTime`; do not autoplay. */
-  scrub?: boolean
+  /** The manifest entry drives source, dimensions, playback and framing. */
+  video: VideoManifestEntry
   scrim?: Scrim
-  /** `object-position`, so portrait crops can favour the product. */
-  focalPoint?: string
   className?: string
-  /**
-   * Share the video element with a parent that needs to drive it — the pinned
-   * reveal seeks this element as the reader scrolls.
-   */
   videoRef?: RefObject<HTMLVideoElement | null>
-  /**
-   * Notified as the video moves through idle → loading → ready/unavailable.
-   * A parent driving the element itself needs this: the `<video>` is not in
-   * the DOM until the section is near the viewport, so a ref alone is not
-   * enough to know when it can be used.
-   */
   onStateChange?: (state: VideoState) => void
 }
 
@@ -38,8 +23,6 @@ const scrimClass: Record<Scrim, string> = {
 
 function placeholderCopy(state: VideoState): string | null {
   if (state === 'unavailable') {
-    // Development affordance: the section is intact, the file simply is not
-    // in /public/videos yet.
     return import.meta.env.DEV ? 'Video not found in /public/videos' : null
   }
   return null
@@ -48,22 +31,24 @@ function placeholderCopy(state: VideoState): string | null {
 /**
  * The single video primitive used by every section.
  *
- * It never fails loudly: while the file is loading, and permanently if the
- * file is missing, a composed placeholder stands in its place and the section
- * around it continues to work.
+ * It never fails loudly: while a clip loads, and permanently if the file is
+ * missing, a composed placeholder stands in and the section around it keeps
+ * working. Because the manifest carries each clip's real dimensions, the box
+ * is reserved before any bytes arrive, so nothing shifts when it paints.
  */
 export function CinematicVideo({
-  asset,
-  eager = false,
-  scrub = false,
+  video,
   scrim = 'none',
-  focalPoint,
   className,
   videoRef: externalVideoRef,
   onStateChange,
 }: Props) {
   const { videoRef, wrapperRef, state, armed, manualPlayback, isPlaying, togglePlayback } =
-    useLazyVideo({ eager, scrub, externalVideoRef })
+    useLazyVideo({
+      eager: video.eager,
+      playback: video.playback,
+      externalVideoRef,
+    })
 
   useEffect(() => {
     onStateChange?.(state)
@@ -76,7 +61,12 @@ export function CinematicVideo({
     <div
       ref={wrapperRef}
       className={[styles.frame, className].filter(Boolean).join(' ')}
-      style={{ '--video-position': focalPoint } as CSSProperties}
+      style={
+        {
+          '--video-position-desktop': video.focalPointDesktop,
+          '--video-position-mobile': video.focalPointMobile,
+        } as CSSProperties
+      }
     >
       <div
         className={[
@@ -105,11 +95,15 @@ export function CinematicVideo({
         <video
           ref={videoRef}
           className={[styles.video, ready ? styles.videoReady : ''].filter(Boolean).join(' ')}
-          src={asset.src}
-          poster={asset.poster}
-          // Scrubbed video needs buffered frames to seek into; ambient video
-          // only needs enough to start.
-          preload={scrub ? 'auto' : 'metadata'}
+          src={video.src}
+          {...(video.poster ? { poster: video.poster } : null)}
+          // Real pixel dimensions, so the intrinsic ratio is known even
+          // before metadata arrives.
+          width={video.width}
+          height={video.height}
+          // Nothing is scrubbed, so metadata is all that is needed up front;
+          // the hero is the exception because it paints first.
+          preload={video.eager ? 'auto' : 'metadata'}
           muted
           playsInline
           disablePictureInPicture
@@ -124,7 +118,7 @@ export function CinematicVideo({
       {manualPlayback && ready ? (
         <button type="button" className={styles.playToggle} onClick={togglePlayback}>
           {isPlaying ? 'Pause' : 'Play'}
-          <span className="visually-hidden"> video: {asset.description}</span>
+          <span className="visually-hidden"> video: {video.description}</span>
         </button>
       ) : null}
     </div>

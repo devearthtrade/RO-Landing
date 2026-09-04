@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from 'react'
 import { gsap } from '../lib/gsap'
-import { VIDEOS } from '../data/content'
+import { VIDEO_MANIFEST } from '../data/videoManifest'
 import { PRICE_DISPLAY } from '../data/product'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { useIsDesktop } from '../hooks/useMediaQuery'
@@ -78,10 +78,8 @@ export function Hero() {
     <section id="top" className={styles.hero} aria-labelledby="hero-heading">
       <div className={styles.media} ref={mediaRef}>
         <CinematicVideo
-          asset={VIDEOS.hero}
-          eager
+          video={VIDEO_MANIFEST.hero}
           scrim={isDesktop ? 'left' : 'bottom'}
-          focalPoint={isDesktop ? '50% 50%' : '62% 46%'}
         />
       </div>
 

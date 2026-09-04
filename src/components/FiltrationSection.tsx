@@ -1,4 +1,4 @@
-import { VIDEOS } from '../data/content'
+import { VIDEO_MANIFEST } from '../data/videoManifest'
 import { SPECS } from '../data/specs'
 import { SectionHeading } from './SectionHeading'
 import { SpecList } from './SpecList'
@@ -21,17 +21,16 @@ export function FiltrationSection() {
   return (
     <VideoSection
       id="filtration"
-      asset={VIDEOS.filtration}
+      video={VIDEO_MANIFEST.filtration}
       labelledBy="filtration-heading"
       mediaSide="left"
       tone="deep"
       scrim="soft"
-      focalPoint="50% 45%"
       extras={<SpecList specs={overlaySpecs} />}
     >
       <SectionHeading
         id="filtration-heading"
-        eyebrow="Filtration"
+        eyebrow="03 — Filtration"
         title="Engineered filtration"
         lead="Five stages, in sequence. Sediment and carbon first — where chlorine is reduced — then the reverse osmosis membrane, then the mineral finish that makes the water drinkable rather than merely pure."
       />

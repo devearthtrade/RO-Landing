@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { KEY_BENEFITS } from '../data/content'
 import { PRICE_DISPLAY, PRODUCT_NAME } from '../data/product'
 import { useReducedMotion } from '../hooks/useReducedMotion'
-import { useRevealOnScroll } from '../hooks/useVideoScrub'
+import { useRevealOnScroll } from '../hooks/useRevealOnScroll'
 import { AddToCartButton } from './AddToCartButton'
 import { SectionHeading } from './SectionHeading'
 import styles from './OfferSection.module.css'
@@ -32,6 +32,7 @@ export function OfferSection() {
       ref={rootRef}
       className={styles.section}
       data-theme="deep"
+      data-seam="both"
       aria-labelledby="offer-heading"
     >
       <div className="shell">

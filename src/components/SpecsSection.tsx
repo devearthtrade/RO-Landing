@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { SPEC_GROUPS, SPECS, UNCONFIRMED_SPECS, isPending, specsByGroup } from '../data/specs'
 import { useReducedMotion } from '../hooks/useReducedMotion'
-import { useRevealOnScroll } from '../hooks/useVideoScrub'
+import { useRevealOnScroll } from '../hooks/useRevealOnScroll'
 import { SectionHeading } from './SectionHeading'
 import { SpecList } from './SpecList'
 import styles from './SpecsSection.module.css'

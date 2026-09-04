@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { PROBLEM_POINTS } from '../data/content'
 import { useReducedMotion } from '../hooks/useReducedMotion'
-import { useRevealOnScroll } from '../hooks/useVideoScrub'
+import { useRevealOnScroll } from '../hooks/useRevealOnScroll'
 import { SectionHeading } from './SectionHeading'
 import styles from './ProblemSection.module.css'
 

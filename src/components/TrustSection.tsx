@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { TRUST_ITEMS } from '../data/trust'
 import { useReducedMotion } from '../hooks/useReducedMotion'
-import { useRevealOnScroll } from '../hooks/useVideoScrub'
+import { useRevealOnScroll } from '../hooks/useRevealOnScroll'
 import { SectionHeading } from './SectionHeading'
 import styles from './TrustSection.module.css'
 

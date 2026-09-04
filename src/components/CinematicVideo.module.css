@@ -13,13 +13,21 @@
   object-fit: cover;
   /* Overridden per section so portrait screens crop to the product, not the
      empty edges of a landscape frame. */
-  object-position: var(--video-position, 50% 50%);
+  /* Sources are 1.75:1 landscape; a portrait viewport crops more than half
+     the frame, so the focal point differs by breakpoint. */
+  object-position: var(--video-position-mobile, 50% 50%);
   opacity: 0;
   transition: opacity var(--dur-slow) var(--ease-out);
 }
 
 .videoReady {
   opacity: 1;
+}
+
+@media (min-width: 900px) {
+  .video {
+    object-position: var(--video-position-desktop, 50% 50%);
+  }
 }
 
 /* ---- Placeholder ---------------------------------------------------------

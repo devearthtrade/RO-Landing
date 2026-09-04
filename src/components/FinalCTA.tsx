@@ -1,9 +1,9 @@
 import { useRef } from 'react'
-import { VIDEOS } from '../data/content'
+import { VIDEO_MANIFEST } from '../data/videoManifest'
 import { PRICE_DISPLAY, PRODUCT_NAME } from '../data/product'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { useIsDesktop } from '../hooks/useMediaQuery'
-import { useRevealOnScroll } from '../hooks/useVideoScrub'
+import { useRevealOnScroll } from '../hooks/useRevealOnScroll'
 import { AddToCartButton } from './AddToCartButton'
 import { CinematicVideo } from './CinematicVideo'
 import styles from './FinalCTA.module.css'
@@ -29,12 +29,17 @@ export function FinalCTA() {
   useRevealOnScroll(rootRef, { disabled: reducedMotion })
 
   return (
-    <section id="buy" ref={rootRef} className={styles.section} aria-labelledby="buy-heading">
+    <section
+      id="buy"
+      ref={rootRef}
+      className={styles.section}
+      data-seam="into-deep"
+      aria-labelledby="buy-heading"
+    >
       <div className={styles.media}>
         <CinematicVideo
-          asset={VIDEOS.final}
+          video={VIDEO_MANIFEST.final}
           scrim={isDesktop ? 'left' : 'bottom'}
-          focalPoint={isDesktop ? '50% 50%' : '58% 45%'}
         />
       </div>
 

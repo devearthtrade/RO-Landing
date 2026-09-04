@@ -6,7 +6,7 @@ import {
   type Review,
 } from '../data/reviews'
 import { useReducedMotion } from '../hooks/useReducedMotion'
-import { useRevealOnScroll } from '../hooks/useVideoScrub'
+import { useRevealOnScroll } from '../hooks/useRevealOnScroll'
 import { SectionHeading } from './SectionHeading'
 import styles from './ReviewsSection.module.css'
 
